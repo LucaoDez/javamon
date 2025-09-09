@@ -1,0 +1,10 @@
+
+oq um pokemon tem?:
+
+tipagem
+ataques (ataques herdam o tipo do javamon)
+espécies diferentes
+
+TIPAGENS> AGUA, FOGO E PLANTA
+
+TODO JAVAMON TEM 
