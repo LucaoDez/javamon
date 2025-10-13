@@ -63,9 +63,9 @@ public class Menu {
         system.out.pritntln("escola:");
         int e = sc.nextInt();
         sc.nextLine();
-         if (e == 1) jogador.comprarItem(new Item("Poção", "cura", 20));
-        else if (e == 2) jogador.comprarItem(new Item("Revive", "revive", 50));
-        else if (e == 3) jogador.comprarItem(new Item("Pokébola", "javaball", 10));
+         if (e == 1) jogador.comprarItens(new Itens("Poção", "cura", 20));
+        else if (e == 2) jogador.comprarItens(new Itens("Revive", "revive", 50));
+        else if (e == 3) jogador.comprarItens(new Itens("Pokébola", "javaball", 10));
         else System.out.println("Saindo da loja...");
     }
     private void curarEquipe(){

@@ -79,18 +79,70 @@ abstract  class Javamon{
             sc.nextLine();
 
             if (escolha < 1 || escolha > ataques.size()) {
-            System.out.println("Escolha inválida. Informe um número entre 1 e " + ataques.size());
-            continue;
+                System.out.println("Escolha inválida. Informe um número entre 1 e " + ataques.size());
+                continue;
             }
 
             Ataque ataqueEscolhido = ataques.get(escolha - 1);
             if (ataqueEscolhido.getPp() <= 0) {
-            System.out.println("Esse ataque não tem PP restante. Escolha outro.");
-            continue;
-        }
+                System.out.println("Esse ataque não tem PP restante. Escolha outro.");
+                continue;
+            }
         return escolha - 1; 
+        }
     }
-}
+
+    public static double calcularMultiplicador(String tipoAtacante, String tipoDefensor) {
+        tipoAtacante = tipoAtacante.toLowerCase();
+        tipoDefensor = tipoDefensor.toLowerCase();
+
+        // Super eficaz
+        if ((tipoAtacante.equals("água") && tipoDefensor.equals("fogo")) ||
+            (tipoAtacante.equals("fogo") && tipoDefensor.equals("ar")) ||
+            (tipoAtacante.equals("terra") && tipoDefensor.equals("água")) ||
+            (tipoAtacante.equals("ar") && tipoDefensor.equals("terra")))
+            return 2.0;
+
+        // Pouco eficaz
+        if ((tipoAtacante.equals("fogo") && tipoDefensor.equals("água")) ||
+            (tipoAtacante.equals("ar") && tipoDefensor.equals("fogo")) ||
+            (tipoAtacante.equals("água") && tipoDefensor.equals("terra")) ||
+            (tipoAtacante.equals("terra") && tipoDefensor.equals("ar")))
+            return 0.5;
+
+        // Neutro
+        return 1.0;
+    }
+
+
+    public void atacar(Javamon defensor, int indiceAtaque) {
+        if (indiceAtaque < 0 || indiceAtaque >= ataques.size()) {
+            System.out.println("Ataque inválido!");
+            return;
+        }
+
+        Ataque ataque = ataques.get(indiceAtaque);
+
+        if (ataque.getPp() <= 0) {
+            System.out.println(ataque.getNome() + " está sem PP!");
+            return;
+        }
+
+        ataque.reduzirPp(); // reduz PP em 1
+
+        double multiplicador = calcularMultiplicador(ataque.getTipo(), defensor.getTipagem());
+
+        int danoBase = (ataque.getPoder() + this.atk) - defensor.getDef();
+        int danoFinal = (int) (danoBase * multiplicador);
+        if (danoFinal < 0) danoFinal = 0;
+
+        defensor.levarDano(danoFinal);
+
+        System.out.println(this.nome + " usou " + ataque.getNome() + "!");
+        if (multiplicador == 2.0) System.out.println("Foi super eficaz!");
+        else if (multiplicador == 0.5) System.out.println("Foi pouco eficaz...");
+        System.out.println(defensor.getNome() + " recebeu " + danoFinal + " de dano!\n");
+    }
 
     public void levarDano(int dano) {
         this.hpATUAL -= dano;
