@@ -1,6 +1,9 @@
+import java.util.Scanner;
+
 public class App {
     public static void main(String[] args) throws Exception {
         Mapa mapa = new Mapa();
+        Scanner sc = new Scanner(System.in);
 
         // Loop principal do jogo
         while (true) {
