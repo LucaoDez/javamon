@@ -8,7 +8,16 @@ public class SaveManager {
             writer.println("posicao: " + jogador.getPosicaoX() + "," + jogador.getPosicaoY());
 
             // equipe do jogador
-            writer.println()
+            writer.println("Equipe: " + jogador.getEquipe().size());
+            for (Javamon javamon : jogador.getEquipe()) {
+                writer.println("Javamon: " + javamon.getNome());
+                writer.println("Nivel: " + javamon.getNivel());
+                writer.println("HP: " + javamon.getHp());
+                writer.println("Ataque: " + javamon.getAtaque());
+                writer.println("Defesa: " + javamon.getDefesa());
+                writer.println("Velocidade: " + javamon.getVelocidade());
+                // Adicione mais atributos conforme necessário
+            }
         }
     }
 }
