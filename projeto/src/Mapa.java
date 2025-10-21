@@ -125,4 +125,23 @@ public class Mapa{
             }
         }
     }
+
+    public int getJogadorX() {
+        return jogadorX;
+    }
+
+    public int getJogadorY() {
+        return jogadorY;
+    }
+
+    public void setPosicaoJogador(int x, int y) {
+        // valida limites do mapa antes de atribuir
+        if (grid == null) return;
+        if (x >= 0 && x < grid[0].length && y >= 0 && y < grid.length) {
+            this.jogadorX = x;
+            this.jogadorY = y;
+        } else {
+            System.out.println("Posição inválida para o jogador no mapa.");
+        }
+    }
 }
