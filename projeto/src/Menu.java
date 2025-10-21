@@ -29,7 +29,7 @@ public class Menu {
             switch (opc) {
                 case 1 -> jogador.mostrarEquipe();
                 case 2 -> jogador.mostrarBox();
-                case 3 -> jogador.mostrarInventario();
+                case 3 -> jogador.mostrarBolsa();
                 case 4 -> abrirLoja();
                 case 5 -> SaveManager.salvar(jogador, mapa, "save.txt");
                 case 6 -> curarEquipe();
@@ -54,21 +54,26 @@ public class Menu {
         }
     }
 
-    private void abeirLoja(){
-        system.out.pritntln("\n=== LOJA ===");
-        system.out.pritntln("1 - pocao (20$)");
-        system.out.pritntln("2 - revive (50$)");
-        system.out.pritntln("3 - javaball (10$)");
-        system.out.pritntln("4 - voltar");
-        system.out.pritntln("escola:");
+    private void abrirLoja(){
+        System.out.println("\n=== LOJA ===");
+        System.out.println("1 - pocao (20$)");
+        System.out.println("2 - revive (50$)");
+        System.out.println("3 - javaball (10$)");
+        System.out.println("4 - voltar");
+        System.out.println("escola:");
         int e = sc.nextInt();
         sc.nextLine();
-         if (e == 1) jogador.comprarItens(new Itens("Poção", "cura", 20));
+
+        if (e == 1) jogador.comprarItens(new Itens("Poção", "cura", 20));
         else if (e == 2) jogador.comprarItens(new Itens("Revive", "revive", 50));
         else if (e == 3) jogador.comprarItens(new Itens("Pokébola", "javaball", 10));
         else System.out.println("Saindo da loja...");
     }
-    private void curarEquipe(){
-        for(Javamon j : jogador.getEquipe()) p.curar();
+     private void curarEquipe(){
+        // restaura HP de cada Javamon para o máximo (ajuste se preferir usar curar(valor))
+        for (Javamon j : jogador.getEquipe()) {
+            j.setHpATUAL(j.getHpMAX());
+        }
+        System.out.println("Equipe curada.");
     }
 }

@@ -1,7 +1,7 @@
 public class Ataque {
-    private String nome;
+    private final String nome;
     private int poder;
-    private String tipo;
+    private final String tipo;
     private int pp;
 
     public Ataque(String nome, int poder, String tipo, int pp) {

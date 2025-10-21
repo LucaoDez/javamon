@@ -12,3 +12,6 @@ public class Feuermon extends Javamon{
         ataques.add(new Ataque("Incendio", 45, "Fogo", 3));
     }
 }
+
+
+

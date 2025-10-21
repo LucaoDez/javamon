@@ -2,11 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Jogador {
-    private String nome; 
+    private final String nome; 
     private int dinheiro;
-    private List<Javamon> equipe; // javamons que estao na equipe do jogador limite de 6
-    private List<Javamon> box; // javamons que nao estao na equipe, mas o jogador possui
-    private List<Itens> bolsa; // itens que o jogador possui
+
+    // coleções marcadas como final porque não são reatribuídas
+    public final List<Javamon> equipe; // javamons que estão na equipe (máx. 6)
+    public final List<Javamon> box;    // javamons extras do jogador
+    public final List<Itens> bolsa;    // itens que o jogador possui
 
     public Jogador(String nome) {
         this.nome = nome;
@@ -23,19 +25,23 @@ public class Jogador {
     public List<Itens> getBolsa() { return bolsa; }
     public String getNome() { return nome; }
 
-    //ganha dinheiro
+    // ganha dinheiro
     public void ganharDinheiro(int valor){
         this.dinheiro += valor;
     }
 
-    //gasta dinheiro(nao deixa negativo)
+    // gasta dinheiro (não deixa negativo)
     public void gastarDinheiro(int valor){
-        this.dinheiro -= valor;
-        if(dinheiro < 0) dinheiro = 0;
+        if (valor < 0) return;
+        if (dinheiro >= valor) {
+            dinheiro -= valor;
+        } else {
+            System.out.println("Dinheiro insuficiente.");
+        }
     }
 
-    //adiciona um javamon na equipe ou na box, caso a equipe ja tenha 6
-    public void AdicionarJavamon(Javamon javamon) {
+    // adiciona um javamon na equipe ou box se estiver cheia
+    public void adicionarJavamon(Javamon javamon) {
         if (equipe.size() < 6) {
             equipe.add(javamon);
             System.out.println(javamon.getNome() + " adicionado(a) na equipe de " + nome);
@@ -45,63 +51,77 @@ public class Jogador {
         }
     }
 
-    // adiciona um item na bolsa do jogador
-    public void adicionarItem(Itens itens){
-        bolsa.add(itens);
+    // adiciona um item na bolsa
+    public void adicionarItem(Itens item){
+        bolsa.add(item);
     }
 
-    //mostra itens na bolsa
+    // mostra itens reais na bolsa
     public void mostrarBolsa() {
         if (bolsa.isEmpty()) {
-            System.out.println("A bolsa de " + nome + " esta vazia.");
+            System.out.println("A bolsa de " + nome + " está vazia.");
         } else {
             System.out.println("Itens na bolsa de " + nome + ":");
-            for (Item item : bolsa) {
+            for (Itens item : bolsa) {
                 System.out.println("- " + item.getNome() + ": " + item.getDescricao());
             }
         }
     }
 
-    //mostra javamons na equipe
+    // mostra equipe
     public void mostrarEquipe() {
         System.out.println("\n=== EQUIPE ===");
         if (equipe.isEmpty()) {
-            System.out.println(nome + " nao tem javamons na equipe.");
+            System.out.println(nome + " não tem javamons na equipe.");
         } else {
-            System.out.println("Equipe de " + nome + ":");
             for (Javamon javamon : equipe) {
-                System.out.println("- " + javamon.getNome() + " (Nivel " + javamon.getNivel() + ")");
+                System.out.println("- " + javamon.getNome() + " (Nível " + javamon.getNivel() + ")");
             }
         }
     }
 
-    //mostra javamons na box
+    // mostra box
     public void mostrarBox() {
         System.out.println("\n=== BOX ===");
         if (box.isEmpty()) {
-            System.out.println(nome + " nao tem javamons na box.");
+            System.out.println(nome + " não tem javamons na box.");
         } else {
-            System.out.println("Box de " + nome + ":");
             for (Javamon javamon : box) {
-                System.out.println("- " + javamon.getNome() + " (Nivel " + javamon.getNivel() + ")");
+                System.out.println("- " + javamon.getNome() + " (Nível " + javamon.getNivel() + ")");
             }
         }
     }
 
-    // troca um javamon da equipe com um da box 
+    // troca javamon da equipe com um da box 
     public void trocarJavamon(int indiceEquipe, int indiceBox) {
         if (indiceEquipe < 0 || indiceEquipe >= equipe.size()) {
-            System.out.println("Indice da equipe invalido.");
+            System.out.println("Índice da equipe inválido.");
             return;
         }
         if (indiceBox < 0 || indiceBox >= box.size()) {
-            System.out.println("Indice da box invalido.");
+            System.out.println("Índice da box inválido.");
             return;
         }
-        Javamon javamonEquipe = equipe.get(indiceEquipe);
-        Javamon javamonBox = box.get(indiceBox);
-        equipe.set(indiceEquipe, javamonBox);
-        box.set(indiceBox, javamonEquipe);
-        System.out.println("Trocado " + javamonEquipe.getNome() + " da equipe com " + javamonBox.getNome() + " da box.");
+
+        Javamon daEquipe = equipe.get(indiceEquipe);
+        Javamon daBox = box.get(indiceBox);
+        equipe.set(indiceEquipe, daBox);
+        box.set(indiceBox, daEquipe);
+        System.out.println("Trocado " + daEquipe.getNome() + " da equipe com " + daBox.getNome() + " da box.");
+    }
+
+    public void comprarItens(Itens item) {
+        if (item == null) {
+            System.out.println("Item inválido.");
+            return;
+        }
+        int preco = item.getPreco();
+        if (dinheiro >= preco) {
+            gastarDinheiro(preco);
+            adicionarItem(item);
+            System.out.println("Você comprou: " + item.getNome() + " por " + preco + "$.");
+        } else {
+            System.out.println("Dinheiro insuficiente. Você tem " + dinheiro + "$, o item custa " + preco + "$.");
+        }
     }
 }

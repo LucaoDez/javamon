@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-abstract  class Javamon{
+abstract class Javamon{
     protected String nome;
     protected String tipagem;
     protected int hpMAX, hpATUAL, atk, def, spd, lvl, exp;
