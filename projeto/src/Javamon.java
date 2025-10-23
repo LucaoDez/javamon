@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-abstract class Javamon{
+public abstract class Javamon{
     protected String nome;
     protected String tipagem;
     protected int hpMAX, hpATUAL, atk, def, spd, lvl, exp;
@@ -168,6 +168,7 @@ abstract class Javamon{
     public int getDef() { return def; }
     public int getSpd() { return spd; }
     public int getNivel() { return lvl; }
+    public List<Ataque> getAtaques() { return ataques; }
 
     public void setHpATUAL(int hpATUAL) { this.hpATUAL = hpATUAL; }
     public void setLvl(int lvl) { this.lvl = lvl; }

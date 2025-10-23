@@ -6,9 +6,9 @@ public class Jogador {
     private int dinheiro;
 
     // coleções marcadas como final porque não são reatribuídas
-    public final List<Javamon> equipe; // javamons que estão na equipe (máx. 6)
-    public final List<Javamon> box;    // javamons extras do jogador
-    public final List<Itens> bolsa;    // itens que o jogador possui
+    private final List<Javamon> equipe; // javamons que estão na equipe (máx. 6)
+    private final List<Javamon> box;    // javamons extras do jogador
+    private final List<Itens> bolsa;    // itens que o jogador possui
 
     public Jogador(String nome) {
         this.nome = nome;

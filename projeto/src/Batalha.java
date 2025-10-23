@@ -2,10 +2,19 @@ import java.util.*;
 
 public class Batalha {
     public static void lutar(Jogador jogador, Javamon inimigo) {
-        Scanner sc = new Scanner(System.in);
+        if (jogador == null) {
+            System.out.println("Jogador inválido.");
+            return;
+        }
+        if (inimigo == null) {
+            System.out.println("Inimigo inválido.");
+            return;
+        }
+
+        Scanner sc = new Scanner(System.in); // NÃO feche este scanner (não chamar sc.close())
         Random rand = new Random();
 
-        if (jogador.getEquipe().isEmpty()) {
+        if (jogador.getEquipe() == null || jogador.getEquipe().isEmpty()) {
             System.out.println("Você não tem Javamon para batalhar!");
             return;
         }
@@ -29,10 +38,17 @@ public class Batalha {
             }
 
             if (escolha == 1) {
-                // usa o método da classe Javamon para escolher ataque via Scanner
-                int indiceAtaque = ativo.escolherAtaque(sc);
+                // mostra ataques e solicita escolha — exige que Javamon tenha mostrarAtaques() ou escolherAtaque(Scanner)
+                int indiceAtaque;
+                try {
+                    indiceAtaque = ativo.escolherAtaque(sc); // implementar em Javamon
+                } catch (UnsupportedOperationException ex) {
+                    // fallback: escolher ataque 0 se método não existir
+                    indiceAtaque = 0;
+                }
+
                 if (indiceAtaque >= 0) {
-                    ativo.atacar(inimigo, indiceAtaque);
+                    ativo.atacar(inimigo, indiceAtaque); // implementar lógica de dano em Javamon.atacar(...)
                 }
             } else if (escolha == 2) {
                 System.out.println("Sistema de itens não implementado.");
@@ -40,10 +56,10 @@ public class Batalha {
                 System.out.println("Troca de Javamon não implementada.");
             } else if (escolha == 4) {
                 if (rand.nextInt(100) < 60) {
-                    System.out.println("Você fugiu da batalha!");
+                    System.out.println("🏃 Você fugiu da batalha!");
                     return;
                 } else {
-                    System.out.println("Não conseguiu fugir!");
+                    System.out.println("❌ Não conseguiu fugir!");
                 }
             } else {
                 System.out.println("Opção inválida.");
@@ -51,9 +67,8 @@ public class Batalha {
 
             // turno do inimigo (IA simples)
             if (inimigo.estaVivo()) {
-                // tenta escolher um ataque com PP > 0
                 int atkIndex = -1;
-                List<Ataque> listaAtks = inimigo.ataques; // acesso protegido — mesmo pacote
+                List<Ataque> listaAtks = inimigo.getAtaques(); // adicionar getter em Javamon se não existir
                 if (listaAtks != null && !listaAtks.isEmpty()) {
                     for (int i = 0; i < listaAtks.size(); i++) {
                         if (listaAtks.get(i).getPp() > 0) {
@@ -66,7 +81,6 @@ public class Batalha {
                 if (atkIndex >= 0) {
                     inimigo.atacar(ativo, atkIndex);
                 } else {
-                    // sem ataques com PP: golpe fraco padrão
                     System.out.println(inimigo.getNome() + " não tem ataques disponíveis e usou um golpe fraco!");
                     ativo.levarDano(5);
                     System.out.println(ativo.getNome() + " recebeu 5 de dano!\n");
@@ -76,10 +90,12 @@ public class Batalha {
 
         if (!inimigo.estaVivo()) {
             System.out.println("🎉 " + inimigo.getNome() + " foi derrotado!");
-            ativo.ganharExperiencia(20); // usa método existente em Javamon
-            // jogador.ganharDinheiro(15); // mantém se método existir em Jogador
+            ativo.ganharExperiencia(20); // garante existência deste método em Javamon
+            // jogador.ganharDinheiro(15); // usar se existir em Jogador
         } else {
             System.out.println("💀 " + ativo.getNome() + " desmaiou!");
         }
+
+        // não fechar sc (System.in) aqui
     }
 }
