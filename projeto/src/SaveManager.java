@@ -127,7 +127,6 @@ public class SaveManager {
             case "feuermon":
             case "feuer": // exemplo de alias
                 return new Feuermon(nome, 70, 70, 25, 15, 20, 1, 0);
-            // case "outramons": return new OutraClasse(...);
             default:
                 return null;
         }

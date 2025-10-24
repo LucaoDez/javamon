@@ -7,7 +7,7 @@ public class Mapa{
     // exemplo: constrói grid a partir de linhas definidas (ajuste conforme sua lógica atual)
     String[] linhas = {
         "########################",
-        "#@   #      #     #   #",
+        "#    #      #     #   #",
         "#    #  ##  #  ## #   #",
         "########################"
     };

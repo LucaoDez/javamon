@@ -4,13 +4,12 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         Mapa mapa = new Mapa();
-        // tenta carregar jogo salvo; se não existir, cria novo jogador
         Jogador jogador = SaveManager.carregar("save.txt", mapa);
         if (jogador == null) {
             jogador = new Jogador("Treinador");
         }
 
-        // garante um Javamon inicial para batalhas
+        
         if (jogador.getEquipe().isEmpty()) {
             jogador.adicionarJavamon(new Feuermon("Feuermon", 70, 70, 25, 15, 20, 1, 0));
         }
@@ -32,7 +31,6 @@ public class App {
             } else if (comando == 'm') {
                 menu.abrirMenu(mapa);
             } else if (comando == 'b') {
-                // batalha de teste contra um Feuermon selvagem
                 Javamon selvagem = new Feuermon("Selvagem", 70, 70, 25, 15, 20, 1, 0);
                 Batalha.lutar(jogador, selvagem);
             } else if ("wasd".indexOf(comando) >= 0) {
