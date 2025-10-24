@@ -71,3 +71,49 @@ Após usar W, A, S ou D, o jogador "@" irá se movimentar pelo mapa:
 
 Apertando M, o menu do jogo aparecerá, mostrando as opções disponíveis ao jogador:
 <img width="609" height="224" alt="image" src="https://github.com/user-attachments/assets/715a8c92-6b3a-4111-96b0-8af45fa9e8ad" />
+
+
+Apertando 1 no menu, o terminal mostrará os javamons presentes na equipe do jogador:  
+<img width="186" height="219" alt="image" src="https://github.com/user-attachments/assets/2e82f749-71fb-455d-8327-e49d2ddfcfba" />
+
+
+Apertando 2 no menu, o terminal mostrará os javamons que o jogador possui, mas que não estão em sua equipe:
+<img width="260" height="225" alt="image" src="https://github.com/user-attachments/assets/98bb548a-0ede-4b23-88d1-6fcd36ba3092" />
+
+
+Apertando 3 no menu, o terminal mostrará o inventario do jogador, cintendo os itens que ele possui:  
+<img width="255" height="205" alt="image" src="https://github.com/user-attachments/assets/78636a51-845d-41cd-8df9-2cfe2614cb75" />
+
+
+Apertando 4 no menu, o terminal mostrará a loja:  
+<img width="190" height="121" alt="image" src="https://github.com/user-attachments/assets/e41e17d5-de11-438e-aed1-048684e97206" />
+
+
+Apertando 5, o jogo será salvo:  
+<img width="219" height="211" alt="image" src="https://github.com/user-attachments/assets/ab86f990-39c0-44a5-8494-9d347ab493ff" />
+
+
+Apertando 6, a equipe do jogador será curada.
+
+
+Apertando 7, o código será encerrado:  
+<img width="405" height="244" alt="image" src="https://github.com/user-attachments/assets/e16b2f4f-ce61-48b9-80a4-9bba7dad19da" />
+
+
+Apertando 8, o jogador voltará ao mapa:  
+<img width="610" height="311" alt="image" src="https://github.com/user-attachments/assets/3ea657b0-f715-4c89-9648-beff00a17dca" />
+
+
+No mapa, ao apertar B(função temporária), o jogador começará uma batalha com um javamon selvagem:
+<img width="629" height="164" alt="image" src="https://github.com/user-attachments/assets/6aeabd2a-91e1-478f-83de-7895404349c2" />
+
+
+Apertando 1 na batalha, o jogador terá a opção de escolhar 1 dos ataques de seu javamon:
+<img width="428" height="358" alt="image" src="https://github.com/user-attachments/assets/2c9dcc36-36d8-4796-9ea7-f4a71dd8babe" />
+
+
+Apertando 2, o jogador poderá usar um de seus itens em seu inventário, e apertando 3, o jogador poderá trocar o javamon ativo com algum javamon de sua equipe(sistemas ainda não implementados);
+
+
+Apertando 4, o jogador terá uma chance de fugir da batalha:  
+<img width="414" height="197" alt="image" src="https://github.com/user-attachments/assets/16c34891-b96d-45b7-9f55-c874cbeaed4e" />
