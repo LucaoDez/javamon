@@ -8,7 +8,6 @@ public class App {
         if (jogador == null) {
             jogador = new Jogador("Treinador");
         }
-
         
         if (jogador.getEquipe().isEmpty()) {
             jogador.adicionarJavamon(new Feuermon("Feuermon", 70, 70, 25, 15, 20, 1, 0));

@@ -1,6 +1,6 @@
-public class Feuermon extends Javamon{
-    public Feuermon(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "fogo", 70, 70, 25, 15, 20, 1, 0);
+public class Cindrax extends Javamon{
+    public Cindrax(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
+        super(nome, "fogo", 90, 90, 30, 15, 10, 1, 0);
         inicializarAtaques();
     }
 

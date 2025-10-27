@@ -1,45 +1,40 @@
-//classe que representa o mapa ASCII
-public class Mapa{
-    private char [][] grid;
+public class Mapa {
+
+    private char[][] grid;
     private int jogadorX, jogadorY;
 
-    public Mapa(){
-    // exemplo: constrói grid a partir de linhas definidas (ajuste conforme sua lógica atual)
-    String[] linhas = {
-        "########################",
-        "#    #      #     #   #",
-        "#    #  ##  #  ## #   #",
-        "########################"
-    };
+    public Mapa() {
 
-    int altura = linhas.length;
-    int largura = 0;
-    for (String l : linhas) if (l != null) largura = Math.max(largura, l.length());
+        String[] linhas = {
+            "############################################################",
+            "#F  **TT*** #  **** * # * ****  # ***  # ***TT* #   *  L ##",
+            "# **##    ######   # **##    #   ##  ######   #   #### * ##",
+            "#   ## **     #   # ** ** ##   ##   **   #  #   #  **    ##",
+            "#   #########  #   #######  ##   #########  #   #   #######",
+            "#  **   ##   # **    ##   ***  ##   ***   #   ** #   **  ##",
+            "#######   ##   ######   #######  ##   ######   ####### ** ##",
+            "#    ##  **   # ** #   **   ##   **   #    #  **   #   ** ##",
+            "#    ##   ######    ######   #######   ######   ##### **  ##",
+            "# **    #  ***        ***      ***   ** #   *    **       ##",
+            "############################################################"
+        };
 
-    grid = new char[altura][largura];
-    for (int i = 0; i < altura; i++) {
-        String linha = (linhas[i] == null) ? "" : linhas[i];
-        // preenche e evita charAt fora do intervalo
-        for (int j = 0; j < largura; j++) {
-            if (j < linha.length()) {
-                grid[i][j] = linha.charAt(j);
-            } else {
-                grid[i][j] = ' '; // preencher com espaço se a linha for curta
-            }
+        grid = new char[linhas.length][linhas[0].length()];
+
+        for (int y = 0; y < linhas.length; y++) {
+            grid[y] = linhas[y].toCharArray();
         }
+
+        jogadorX = 2;
+        jogadorY = 2;
     }
 
-    // inicializa posição do jogador de forma segura
-    jogadorX = 1;
-    jogadorY = 1;
-}
 
-    // Mostra o mapa no terminal
     public void mostrarMapa() {
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid[y].length; x++) {
-                if (y == jogadorY && x == jogadorX) {
-                    System.out.print("@"); // Jogador
+                if (x == jogadorX && y == jogadorY) {
+                    System.out.print("@");
                 } else {
                     System.out.print(grid[y][x]);
                 }
@@ -48,39 +43,32 @@ public class Mapa{
         }
     }
 
-    // Movimento do jogador
-    public void mover(char direcao, Jogador jogador) {
-        int novoX = jogadorX, novoY = jogadorY;
-        if (direcao == 'w') novoY--;
-        else if (direcao == 's') novoY++;
-        else if (direcao == 'a') novoX--;
-        else if (direcao == 'd') novoX++;
 
-        if (novoX >= 0 && novoX < grid[0].length && novoY >= 0 && novoY < grid.length) {
-            char destino = grid[novoY][novoX];
-            if (destino != '-') { // não atravessa árvores
-                jogadorX = novoX;
-                jogadorY = novoY;
-            }
+    public void mover(char d) {
+        int novoX = jogadorX;
+        int novoY = jogadorY;
+
+        if (d == 'w') novoY--;
+        if (d == 's') novoY++;
+        if (d == 'a') novoX--;
+        if (d == 'd') novoX++;
+
+        if (grid[novoY][novoX] == '#') return;
+
+        if (grid[novoY][novoX] == 'L') {
+            new LigaJavamon().entrarLiga();
+            return;
         }
-    }
 
-    public int getJogadorX() {
-        return jogadorX;
-    }
+        jogadorX = novoX;
+        jogadorY = novoY;
 
-    public int getJogadorY() {
-        return jogadorY;
-    }
-
-    public void setPosicaoJogador(int x, int y) {
-        // valida limites do mapa antes de atribuir
-        if (grid == null) return;
-        if (x >= 0 && x < grid[0].length && y >= 0 && y < grid.length) {
-            this.jogadorX = x;
-            this.jogadorY = y;
-        } else {
-            System.out.println("Posição inválida para o jogador no mapa.");
+        if (grid[jogadorY][jogadorX] == '*') {
+            double chance = Math.random();
+            if (chance < 0.20) {
+                System.out.println("\n⚠ Javamon selvagem apareceu!");
+                Batalha.iniciarBatalhaSelvagem();
+            }    
         }
     }
 }
