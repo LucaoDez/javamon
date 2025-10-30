@@ -1,4 +1,7 @@
 // ...existing code...
+
+import java.util.Random;
+
 public class Mapa {
 
     private final char[][] grid;
@@ -66,6 +69,52 @@ public class Mapa {
         return y >= 0 && y < grid.length && x >= 0 && x < grid[y].length;
     }
 
+     private Javamon gerarSelvagem(Jogador jogador) {
+        Random rand = new Random();
+
+        // lista de espécies disponíveis no jogo (adicione/remova conforme seu projeto)
+        String[] especies = { "Feuermon", "Aquaril", "Hydreon", "Borealix", "Cindrax", "Terravox", "Ventrix", "Mudrill" };
+
+        // escolha aleatória (pode trocar por pesos se quiser)
+        String especie = especies[rand.nextInt(especies.length)];
+
+        // determina nível baseado no javamon líder do jogador (se houver)
+        int nivel = 1;
+        if (jogador != null && !jogador.getEquipe().isEmpty()) {
+            try {
+                int lvlJogador = jogador.getEquipe().get(0).getLvl();
+                // gera nível entre (lvlJogador-1) e (lvlJogador+2)
+                nivel = Math.max(1, lvlJogador - 1 + rand.nextInt(4));
+            } catch (Exception e) {
+                nivel = 1 + rand.nextInt(3);
+            }
+        } else {
+            nivel = 1 + rand.nextInt(3);
+        }
+
+        // criar instância concreta por espécie (ajuste stats se desejar)
+        switch (especie.toLowerCase()) {
+            case "feuermon":
+                return new Feuermon("Selvagem Feuermon", 70, 70, 25, 15, 20, nivel, 0);
+            case "aquaril":
+                return new Aquaril("Selvagem Aquaril", 70, 70, 25, 15, 20, nivel, 0);
+            case "hydreon":
+                return new Hydreon("Selvagem Hydreon", 70, 70, 25, 15, 20, nivel, 0);
+            case "borealix":
+                return new Borealix("Selvagem Borealix", 70, 70, 25, 15, 20, nivel, 0);
+            case "cindrax":
+                return new Cindrax("Selvagem Cindrax", 70, 70, 25, 15, 20, nivel, 0);
+            case "terravox":
+                return new Terravox("Selvagem Terravox", 70, 70, 25, 15, 20, nivel, 0);
+            case "ventrix":
+                return new Ventrix("Selvagem Ventrix", 70, 70, 25, 15, 20, nivel, 0);
+            case "mudrill":
+                return new Mudrill("Selvagem Mudrill", 70, 70, 25, 15, 20, nivel, 0);
+            default:
+                return new Feuermon("Selvagem Feuermon", 70, 70, 25, 15, 20, nivel, 0);
+        }
+    }
+
     // mover sem jogador (mantém compatibilidade)
     public void mover(char d) {
         mover(d, null);
@@ -105,7 +154,7 @@ public class Mapa {
                 System.out.println("\n⚠ Javamon selvagem apareceu!");
                 if (jogador != null) {
                     // cria um inimigo de teste e inicia a batalha usando a API existente
-                    Javamon selvagem = new Feuermon("Selvagem", 70, 70, 25, 15, 20, 1, 0);
+                    Javamon selvagem = gerarSelvagem(jogador);
                     Batalha.lutar(jogador, selvagem);
                 } else {
                     System.out.println("Passe um Jogador para iniciar a batalha programaticamente.");

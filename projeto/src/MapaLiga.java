@@ -98,7 +98,7 @@ public class MapaLiga {
         // 🚪 SAÍDA do Hall
         if (destino == 'S') {
             System.out.println("\n↩️ Você saiu do Hall!");
-            new MapaCidade(jogador).entrar(); // ✅ volta para a cidade
+            new Mapa (jogador).entrar(); // ✅ volta para a cidade
             return;
         }
 

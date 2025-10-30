@@ -6,6 +6,7 @@ public class Jogador {
     private int dinheiro;
 
     // coleções marcadas como final porque não são reatribuídas
+    private static final int MAX_EQUIPE = 6;
     private final List<Javamon> equipe; // javamons que estão na equipe (máx. 6)
     private final List<Javamon> box;    // javamons extras do jogador
     private final List<Itens> bolsa;    // itens que o jogador possui
@@ -41,13 +42,14 @@ public class Jogador {
     }
 
     // adiciona um javamon na equipe ou box se estiver cheia
-    public void adicionarJavamon(Javamon javamon) {
-        if (equipe.size() < 6) {
-            equipe.add(javamon);
-            System.out.println(javamon.getNome() + " adicionado(a) na equipe de " + nome);
+    public void capturarJavamon(Javamon j) {
+        if (j == null) return;
+        if (equipe.size() < MAX_EQUIPE) {
+            equipe.add(j);
+            System.out.println(j.getNome() + " foi adicionado à sua equipe!");
         } else {
-            box.add(javamon);
-            System.out.println(javamon.getNome() + " adicionado(a) na box de " + nome);
+            box.add(j);
+            System.out.println("Equipe cheia. " + j.getNome() + " foi enviado para o box.");
         }
     }
 
@@ -124,4 +126,32 @@ public class Jogador {
             System.out.println("Dinheiro insuficiente. Você tem " + dinheiro + "$, o item custa " + preco + "$.");
         }
     }
+     // ✅ Retorna quantas vitórias o jogador já tem
+    public int getVitoriasGym() {
+        return vitoriasGym;
+    }
+
+    // ✅ Adiciona +1 vitória quando derrota um líder
+    public void addVitoriaGym() {
+        vitoriasGym++;
+        System.out.println("🏅 Vitória registrada! Total de ginásios vencidos: " + vitoriasGym);
+    }
+
+    // (opcional) Resetar vitórias se perder para o campeão ou reiniciar o jogo
+    public void resetVitoriasGym() {
+        vitoriasGym = 0;
+    }
+
+     // ✅ retorna se o jogador já é campeão
+    public boolean getSeTornouCampeao() {
+        return seTornouCampeao;
+    }
+
+    // ✅ marca o jogador como campeão
+    public void setSeTornouCampeao() {
+        seTornouCampeao = true;
+        System.out.println("🏆 Você agora é o CAMPEÃO da Liga Javamon!!!");
+    }
 }
+
+    
