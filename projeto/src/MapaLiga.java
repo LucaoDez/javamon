@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class MapaLiga {
 
     // 🗺️ Mapa da Ilha da Liga Javamon
@@ -27,12 +29,14 @@ public class MapaLiga {
     public void entrar() {
         System.out.println("\n🔥 Bem-vindo à Ilha da Liga Javamon!");
 
-        java.util.Scanner in = new java.util.Scanner(System.in);
+        Scanner in = new Scanner(System.in);
 
         while (true) {
             mostrar();
             System.out.print("Movimente-se (WASD): ");
-            char m = in.next().charAt(0);
+            String line = in.nextLine();
+            if (line == null || line.trim().isEmpty()) continue;
+            char m = Character.toLowerCase(line.trim().charAt(0));
             mover(m);
         }
     }
@@ -51,10 +55,14 @@ public class MapaLiga {
     // ➡️ Movimentação e lógica das portas
     private void mover(char d) {
         int nx = x, ny = y;
+
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return;
+
+        if (!dentro(nx, ny)) return;
 
         // Se for parede, não anda
         if (mapa[ny][nx] == '#') return;
@@ -98,12 +106,16 @@ public class MapaLiga {
         // 🚪 SAÍDA do Hall
         if (destino == 'S') {
             System.out.println("\n↩️ Você saiu do Hall!");
-            new Mapa (jogador).entrar(); // ✅ volta para a cidade
+            new Mapa ().entrar(jogador); // ✅ volta para a cidade
             return;
         }
 
         // ✅ Se não for porta, apenas anda
         x = nx;
         y = ny;
+    }
+
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
 }

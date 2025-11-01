@@ -162,5 +162,49 @@ public class Mapa {
             }
         }
     }
+
+    public void entrar(Jogador jogador) {
+        // encontra 'L' no grid (posição fixa no mapa da classe)
+        int lx = -1, ly = -1;
+        for (int y = 0; y < grid.length && lx == -1; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                if (grid[y][x] == 'L') { lx = x; ly = y; break; }
+            }
+        }
+
+        if (lx != -1) {
+            int leftX = lx - 1;
+            // tenta spawnar exatamente à esquerda do 'L'
+            if (validaPosicao(leftX, ly) && grid[ly][leftX] != '#') {
+                jogadorX = leftX;
+                jogadorY = ly;
+            } else {
+                // fallback: se a célula esquerda estiver bloqueada, tenta colocar ao lado (direita/cima/baixo) rapidamente
+                int[][] candidatos = { {lx + 1, ly}, {lx, ly - 1}, {lx, ly + 1} };
+                boolean colocado = false;
+                for (int[] c : candidatos) {
+                    int cx = c[0], cy = c[1];
+                    if (validaPosicao(cx, cy) && grid[cy][cx] != '#') {
+                        jogadorX = cx;
+                        jogadorY = cy;
+                        colocado = true;
+                        break;
+                    }
+                }
+                if (!colocado) {
+                    // último recurso: coloca ao lado esquerdo mesmo que seja parede (garante retorno à cidade)
+                    jogadorX = Math.max(0, Math.min(grid[0].length - 1, leftX));
+                    jogadorY = Math.max(0, Math.min(grid.length - 1, ly));
+                }
+            }
+        } else {
+            // se 'L' não existir por algum motivo, spawn padrão
+            jogadorX = 2;
+            jogadorY = 2;
+        }
+
+        mostrarMapa();
+        System.out.println("Você apareceu próximo à entrada da Liga.");
+    }
 }
 // ...existing code...
