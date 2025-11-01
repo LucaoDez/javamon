@@ -138,7 +138,7 @@ public class Mapa {
 
         if (destino == 'L') {
             if (jogador != null) {
-                new MapaLiga().entrar();
+                new MapaLiga(jogador).entrar();
             } else {
                 System.out.println("Portão da Liga (necessário jogador).");
             }

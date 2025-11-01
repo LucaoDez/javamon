@@ -169,6 +169,7 @@ public abstract class Javamon{
     public int getSpd() { return spd; }
     public int getNivel() { return lvl; }
     public List<Ataque> getAtaques() { return ataques; }
+    public int getLvl() { return lvl; }
 
     public void setHpATUAL(int hpATUAL) { this.hpATUAL = hpATUAL; }
     public void setLvl(int lvl) { this.lvl = lvl; }
