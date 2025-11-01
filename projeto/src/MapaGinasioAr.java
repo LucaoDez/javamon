@@ -50,9 +50,9 @@ public class MapaGinasioAr {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
 
         if (mapa[ny][nx] == '#') return; // parede
 
@@ -61,7 +61,10 @@ public class MapaGinasioAr {
         // 🌪️ vento empurra o jogador
         if (destino == '~' && ventoAtivo) {
             System.out.println("🌪️ O vento te empurra!");
-            ny--;
+            ny--; // empurra para cima (exemplo)
+            // revalida após empurrão
+            if (!dentro(nx, ny)) { resetPosicao(); return; }
+            destino = mapa[ny][nx];
             ventoAtivo = false;
         }
 
@@ -86,12 +89,21 @@ public class MapaGinasioAr {
         y = ny;
     }
 
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
+    }
+
+     private void resetPosicao() {
+        // voltar ao spawn ou posição segura
+        x = 1; y = 8;
+    }
+
     // ✅ batalha igual ao estilo dos outros ginásios
     private void iniciarBatalha() {
         Javamon[] time = {
-            new Javamon("Pidgeotto", "Ar", 65),
-            new Javamon("Noivern",   "Ar", 80),
-            new Javamon("Rayquaza",  "Ar", 120) // chefe forte
+            new Ventrix("Pidgeotto", 65, 65, 18, 12, 16, 5, 0),
+            new Ventrix("Noivern",   80, 80, 22, 14, 20, 7, 0),
+            new Ventrix("Rayquaza", 120,120, 30, 20, 24,10, 0) // chefe forte
         };
 
         for (Javamon inimigo : time) {

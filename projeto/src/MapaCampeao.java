@@ -22,6 +22,7 @@ public class MapaCampeao {
 
     private int x = 25, y = 15;
     private Jogador jogador;
+    private final int spawnX = 25, spawnY = 15;
 
     public MapaCampeao(Jogador jogador) {
         this.jogador = jogador;
@@ -37,7 +38,10 @@ public class MapaCampeao {
         while (true) {
             mostrar();
             System.out.print("> ");
-            mover(in.next().charAt(0));
+            String line = in.nextLine();
+            if (line == null || line.trim().isEmpty()) continue;
+            char comando = line.trim().toLowerCase().charAt(0);
+            mover(comando);
         }
     }
 
@@ -55,13 +59,16 @@ public class MapaCampeao {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return;
+
+        if (!dentro(nx, ny)) return;
+        char destino = mapa[ny][nx];
 
         if (mapa[ny][nx] == '#') return;
 
-        char destino = mapa[ny][nx];
 
         if (destino == 'O') {
             System.out.println("🗿 As estátuas bloqueiam o caminho!");
@@ -71,32 +78,7 @@ public class MapaCampeao {
         if (destino == 'C') {
             System.out.println("\n👑 CAMPEÃO FINAL");
             System.out.println("⚔️ Campeão Eclipse: \"Seu caminho termina aqui!\"");
-
-            // JAVAMONS DO CAMPEÃO
-            Javamon[] timeEclipse = {
-                new Javamon("Titanflare", "Fogo/Lutador", 50, 320, 140, 120,
-                    new String[]{"Chama Final", "Soco Meteoro", "Explosão Vulcânica", "Chute Dragão"}),
-                new Javamon("AquaTempest", "Água/Dragão", 50, 340, 125, 130,
-                    new String[]{"Tsunami", "Hidro Impacto", "Rugido Dracônico", "Corrente Abissal"}),
-                new Javamon("ElectroRift", "Elétrico/Fantasma", 50, 300, 135, 110,
-                    new String[]{"Raio Espectral", "Choque Dimensional", "Tempestade Plasma", "Surto Fantasma"}),
-                new Javamon("TerraGolem", "Terra/Aço", 50, 380, 120, 160,
-                    new String[]{"Terremoto", "Punho de Ferro", "Avalanche Rochosa", "Murro Sísmico"}),
-                new Javamon("StormValkyrie", "Voador/Fada", 50, 290, 130, 105,
-                    new String[]{"Vendaval Divino", "Asa Tempestuosa", "Luz Sagrada", "Dança Celestial"}),
-                new Javamon("VoidSeraph", "Sombrio/Psíquico", 50, 310, 150, 115,
-                    new String[]{"Colapso Mental", "Lâmina Sombria", "Pulso Astral", "Ritual do Vazio"})
-            };
-
-            boolean venceu = jogador.batalharContraEquipe("Eclipse", timeEclipse);
-
-            if (venceu) {
-                System.out.println("🎉 VOCÊ DERROTOU O CAMPEÃO ECLIPSE!");
-                System.out.println("🏅 Você é o CAMPEÃO SUPREMO!");
-                jogador.seTornouCampeao();
-            } else {
-                System.out.println("💀 Você foi derrotado… treine mais!");
-            }
+            enfrentarCampeao();
             return;
         }
 
@@ -107,5 +89,46 @@ public class MapaCampeao {
 
         x = nx;
         y = ny;
+    }
+
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
+    }
+    private void enfrentarCampeao() {
+        // crie instâncias concretas (ajuste stats conforme suas classes)
+        Javamon[] timeEclipse = {
+            new Feuermon("Titanflare", 320, 320, 140, 120, 100, 50, 0),
+            new Aquaril("AquaTempest", 340, 340, 125, 130, 90, 50, 0),
+            new Ventrix("StormValkyrie", 290, 290, 130, 105, 120, 50, 0),
+            new Terravox("TerraGolem", 380, 380, 120, 160, 60, 50, 0),
+            new Cindrax("ElectroRift", 300, 300, 135, 110, 95, 50, 0),
+            new Borealix("VoidSeraph", 310, 310, 150, 115, 85, 50, 0)
+        };
+
+        for (Javamon inimigo : timeEclipse) {
+            System.out.println("\nO Campeão enviou " + inimigo.getNome() + "!");
+            Batalha.lutar(jogador, inimigo);
+
+            // verifica se jogador ainda tem algum Javamon vivo
+            boolean jogadorTemVivo = false;
+            if (jogador != null && jogador.getEquipe() != null) {
+                for (Javamon j : jogador.getEquipe()) {
+                    if (j != null && j.estaVivo()) { jogadorTemVivo = true; break; }
+                }
+            }
+
+            if (!jogadorTemVivo) {
+                System.out.println("\n💀 Você foi derrotado pelo Campeão.");
+                // opcional: teleportar para spawn
+                x = spawnX;
+                y = spawnY;
+                return;
+            }
+        }
+
+        System.out.println("\n🎉 VOCÊ DERROTOU O CAMPEÃO ECLIPSE!");
+        System.out.println("🏅 Você é o CAMPEÃO SUPREMO!");
+        // registra vitória/seTornouCampeao no Jogador aqui se esse método existir
+        // ex: jogador.seTornouCampeao();
     }
 }

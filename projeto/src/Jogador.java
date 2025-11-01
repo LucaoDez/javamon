@@ -10,6 +10,8 @@ public class Jogador {
     private final List<Javamon> equipe; // javamons que estão na equipe (máx. 6)
     private final List<Javamon> box;    // javamons extras do jogador
     private final List<Itens> bolsa;    // itens que o jogador possui
+    private int vitoriasGym = 0;        // ✅ número de ginásios vencidos
+    private boolean seTornouCampeao = false; // ✅ se o jogador já é campeão
 
     public Jogador(String nome) {
         this.nome = nome;

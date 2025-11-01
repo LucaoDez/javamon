@@ -53,9 +53,10 @@ public class MapaGinasioAgua {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return;
 
         char obst = mapa[ny][nx];
 
@@ -74,12 +75,27 @@ public class MapaGinasioAgua {
         if (obst == '>') {
             System.out.println("🌊 A correnteza te empurrou!");
             nx++;
+            if (!dentro(nx, ny)) {
+                x = spawnX;
+                y = spawnY;
+                return;
+            }
+            obst = mapa[ny][nx];
+            if (obst == '#' || obst == '~') return;
         }
 
         // correnteza esquerda
         if (obst == '<') {
             System.out.println("🌊 A correnteza te puxou!");
             nx--;
+            if (!dentro(nx, ny)) {
+                // se empurrar para fora do mapa, volta ao spawn
+                x = spawnX;
+                y = spawnY;
+                return;
+            }
+            obst = mapa[ny][nx];
+            if (obst == '#' || obst == '~') return;
         }
 
         // chão escorregadio
@@ -110,15 +126,19 @@ public class MapaGinasioAgua {
         y = ny;
     }
 
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
+    }
+
     // ✅ Sistema de batalha igual ao do fogo
     private void iniciarBatalha() {
         System.out.println("\n🌊 AQUA: As ondas vão te engolir!");
 
         // Time do líder AQUA
         Javamon[] time = {
-            new Javamon("Wartortle", "Água", 60),
-            new Javamon("Starmie",   "Água", 75),
-            new Javamon("Gyarados",  "Água", 90)
+            new Aquaril("Wartortle", 60, 60, 18, 14, 12, 5, 0),
+            new Hydreon("Starmie",   75, 75, 22, 15, 18, 7, 0),
+            new Aquaril("Gyarados",  90, 90, 30, 20, 15, 9, 0)
         };
 
         for (Javamon inimigo : time) {

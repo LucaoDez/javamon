@@ -46,14 +46,17 @@ public class MapaGinasioFogo {
     private void mover(char d) {
         int nx = x, ny = y;
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return;
+
+        if (!dentro(nx, ny)) return;
+
+        char destino = mapa[ny][nx];
 
         // ✅ paredes e obstáculos (lava '^' e fogo '*')
         if (mapa[ny][nx] == '#' || mapa[ny][nx] == '^' || mapa[ny][nx] == '*') return;
-
-        char destino = mapa[ny][nx];
 
         // Líder Pyros
         if (destino == 'L') {
@@ -73,15 +76,19 @@ public class MapaGinasioFogo {
         y = ny;
     }
 
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
+    }
+
     // ✅ sistema novo de batalha integrado com seu mapa
     private void iniciarBatalha() {
         System.out.println("\n🔥 Pyros: Prepare-se para queimar!");
 
         // time do líder Pyros
         Javamon[] time = {
-            new Javamon("Flareon", "Fogo", 60),
-            new Javamon("Magmar",  "Fogo", 70),
-            new Javamon("Arcanine","Fogo", 85)
+            new Feuermon("Flareon", 60, 60, 20, 12, 14, 5, 0),
+            new Feuermon("Magmar",  70, 70, 22, 13, 12, 7, 0),
+            new Feuermon("Arcanine",85, 85, 28, 18, 16, 9, 0)
         };
 
         for (Javamon inimigo : time) {

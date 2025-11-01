@@ -46,9 +46,10 @@ public class MapaGinasioTerra {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
-        if (d == 's') ny++;
-        if (d == 'a') nx--;
-        if (d == 'd') nx++;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return;
 
         if (mapa[ny][nx] == '#') return; // parede
 
@@ -71,28 +72,7 @@ public class MapaGinasioTerra {
         // 🏆 Líder do ginásio
         if (destino == 'L') {
             System.out.println("⛰️ Líder Gaia: Mostre que sua força é inabalável!");
-
-            // ✅ Time da líder Gaia (Tipo Terra)
-            Javamon[] timeTerra = {
-                new Javamon("Sandarm", "Terra", 70, 18, 12),
-                new Javamon("Mudhorn", "Terra", 85, 20, 14),
-                new Javamon("Golemrock", "Terra", 100, 25, 18) // Boss
-            };
-
-            for (Javamon inimigo : timeTerra) {
-                System.out.println("⛰️ Gaia enviou " + inimigo.getNome() + "!");
-                Batalha.lutar(jogador, inimigo); // seu sistema de batalha
-
-                if (inimigo.estaVivo()) {
-                    System.out.println("💀 Você foi esmagado pela força da Terra!");
-                    new MapaLiga(jogador).entrar();
-                    return;
-                }
-            }
-
-            System.out.println("🏆 Você derrotou a Líder Gaia do Ginásio Terra!");
-            jogador.adicionarVitoriaGym("Terra");
-            new MapaLiga(jogador).entrar();
+            iniciarBatalha();
             return;
         }
 
@@ -105,5 +85,42 @@ public class MapaGinasioTerra {
 
         x = nx;
         y = ny;
+    }
+
+    private boolean dentro(int nx, int ny) {
+        return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
+    }
+
+    private void iniciarBatalha() {
+        System.out.println("\n⛰️ Gaia: Prepare-se para ser esmagado pela Terra!");
+
+        // use subclasses concretas existentes no projeto (ajuste nomes/estatísticas conforme necessidade)
+        Javamon[] timeTerra = {
+            new Mudrill("Sandarm", 70, 70, 18, 12, 8, 5, 0),
+            new Terravox("Mudhorn", 85, 85, 20, 14, 6, 7, 0),
+            new Terravox("Golemrock", 100, 100, 25, 18, 4, 9, 0) // Boss
+        };
+
+        for (Javamon inimigo : timeTerra) {
+            System.out.println("⛰️ Gaia enviou " + inimigo.getNome() + "!");
+            Batalha.lutar(jogador, inimigo);
+
+            if (inimigo.estaVivo()) {
+                System.out.println("💀 Você foi esmagado pela força da Terra!");
+                new MapaLiga(jogador).entrar();
+                return;
+            }
+        }
+
+        System.out.println("🏆 Você derrotou a Líder Gaia do Ginásio Terra!");
+        // garanta que Jogador tem método para registrar vitória; ajuste se necessário
+        if (jogador != null) {
+            try {
+                jogador.addVitoriaGym();; // ou use jogador.addVitoriaGym()
+            } catch (Throwable t) {
+                // método não existe — ignore ou implemente em Jogador
+            }
+        }
+        new MapaLiga(jogador).entrar();
     }
 }

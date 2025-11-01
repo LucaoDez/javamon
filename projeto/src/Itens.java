@@ -1,4 +1,4 @@
-// Classe que representa um item no jogo
+// Itens.java
 public class Itens {
     private final String nome;
     private final String descricao;
@@ -11,40 +11,26 @@ public class Itens {
         this.quantidade = quantidade;
     }
 
-    
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public String getDescricao() { return descricao; }
+    public int getQuantidade() { return quantidade; }
+    public int getPreco() { return preco; }
 
-    
-    public String getDescricao() {
-        return descricao;
-    }
+    public void adicionarQuantidade(int valor) { this.quantidade += valor; }
 
-    
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public int getPreco() {
-        return preco;
-    }
-
-    
-    public void adicionarQuantidade(int valor) {
-        this.quantidade += valor;
-    }
-
-    
     public void removerQuantidade(int valor) {
         this.quantidade -= valor;
         if (this.quantidade < 0) this.quantidade = 0;
     }
 
     public void setQuantidade(int novaQuantidade) {
-        this.quantidade = Math.max (0, novaQuantidade);
+        this.quantidade = Math.max(0, novaQuantidade);
     }
 
+    // Método que subclasses sobrescrevem
+    public void usar(Javamon alvo) {
+        System.out.println("Nada acontece...");
+    }
 
     @Override
     public String toString() {
