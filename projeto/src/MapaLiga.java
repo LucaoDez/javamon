@@ -16,6 +16,7 @@ public class MapaLiga {
     private int x = 12, y = 5; // posição inicial no 'S'
     private Jogador jogador;
     private Scanner in = new Scanner(System.in);
+    private boolean saiu = false;
 
     public MapaLiga(Jogador jogador) {
         this.jogador = jogador;
@@ -34,7 +35,7 @@ public class MapaLiga {
         }
     }
 
-    private void mostrar() {
+    public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {
                 if (i == y && j == x) System.out.print("@");
@@ -44,7 +45,7 @@ public class MapaLiga {
         }
     }
 
-    private void mover(char d) {
+    public void mover(char d) {
         int nx = x, ny = y;
 
         switch (d) {
@@ -79,17 +80,8 @@ public class MapaLiga {
         // ✅ SAIR DA LIGA CORRETAMENTE
         if (destino == 'S') {
             System.out.println("\n↩️ Você saiu do Hall!");
-
-            Mapa mapaCidade = new Mapa();
-            mapaCidade.entrar(jogador); // teleporta pertinho do 'L'
-
-            // volta ao loop de andar na cidade
-            while (true) {
-                mapaCidade.mostrarMapa();
-                System.out.print("Movimente-se (WASD): ");
-                char mov = in.nextLine().toLowerCase().charAt(0);
-                mapaCidade.mover(mov, jogador);
-            }
+            saiu = true;
+            return;
         }
 
         x = nx;
@@ -99,4 +91,7 @@ public class MapaLiga {
     private boolean dentro(int nx, int ny) {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
+
+    public boolean saiuDaLiga() { return saiu; }
+    public void resetSair() { saiu = false; }
 }
