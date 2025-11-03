@@ -16,13 +16,13 @@ public class Javacube extends Itens {
 
         removerQuantidade(1);
 
-        if (!alvo.isVivo()) {
+        if (!alvo.estaVivo()) {
             System.out.println("Você capturou facilmente " + alvo.getNome() + "!");
             return;
         }
 
         // Chance de captura baseada na porcentagem de HP
-        double chance = 1.0 - ((double) alvo.getHpAtual() / alvo.getHpMax());
+        double chance = 1.0 - ((double) alvo.getHpATUAL() / alvo.getHpMAX());
         double roll = random.nextDouble();
 
         if (roll < chance) {

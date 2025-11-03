@@ -13,7 +13,7 @@ public class Pocao extends Itens {
             System.out.println("Você não tem mais Poções!");
             return;
         }
-        if (!alvo.isVivo()) {
+        if (!alvo.estaVivo()) {
             System.out.println(alvo.getNome() + " está nocauteado e não pode ser curado!");
             return;
         }

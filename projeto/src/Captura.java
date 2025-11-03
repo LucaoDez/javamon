@@ -39,7 +39,7 @@ public class Captura {
     public boolean tentarCaptura(Jogador jogador) {
         boolean ok = tentarCaptura();
         if (ok && jogador != null) {
-            jogador.capturarJavamon(javamon);
+            jogador.adicionarJavamon(javamon);
         }
         return ok;
     }

@@ -10,7 +10,7 @@ public class Revive extends Itens {
             return;
         }
 
-        if (alvo.isVivo()) {
+        if (alvo.estaVivo()) {
             System.out.println(alvo.getNome() + " já está vivo!");
             return;
         }

@@ -44,7 +44,7 @@ public class Jogador {
     }
 
     // adiciona um javamon na equipe ou box se estiver cheia
-    public void capturarJavamon(Javamon j) {
+    public void adicionarJavamon(Javamon j) {
         if (j == null) return;
         if (equipe.size() < MAX_EQUIPE) {
             equipe.add(j);

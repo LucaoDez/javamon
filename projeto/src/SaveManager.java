@@ -1,28 +1,37 @@
+// ...existing code...
 import java.io.*;
+import java.util.List;
 
-// Classe responsável por salvar e carregar o progresso do jogador
 public class SaveManager {
 
     // ====== SALVAR O JOGO ======
     public static void salvar(Jogador jogador, Mapa mapa, String caminho) {
+        if (jogador == null || mapa == null || caminho == null) return;
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(caminho))) {
             writer.println("=== SAVE JAVAMON ===");
-            writer.println("Nome=" + jogador.getNome());
+            writer.println("Nome=" + safe(jogador.getNome()));
             writer.println("Dinheiro=" + jogador.getDinheiro());
             writer.println("PosX=" + mapa.getJogadorX());
             writer.println("PosY=" + mapa.getJogadorY());
 
             // Equipe
-            writer.println("Equipe=" + jogador.getEquipe().size());
-            for (Javamon j : jogador.getEquipe()) {
-                writer.println(j.getNome() + "," + j.getNivel());
+            List<Javamon> equipe = jogador.getEquipe();
+            writer.println("Equipe=" + (equipe == null ? 0 : equipe.size()));
+            if (equipe != null) {
+                for (Javamon j : equipe) {
+                    // usa getNome() e getLvl() (ajuste se o método for diferente)
+                    writer.println(safe(j.getNome()) + "," + j.getLvl());
+                }
             }
 
             // Itens
-            writer.println("Itens=" + jogador.getBolsa().size());
-            // aqui assumimos que Itens tem getNome() e getQuantidade()
-            for (Itens i : jogador.getBolsa()) {
-                writer.println(i.getNome() + "," + i.getQuantidade());
+            List<Itens> bolsa = jogador.getBolsa();
+            writer.println("Itens=" + (bolsa == null ? 0 : bolsa.size()));
+            if (bolsa != null) {
+                for (Itens i : bolsa) {
+                    writer.println(safe(i.getNome()) + "," + i.getQuantidade());
+                }
             }
 
             System.out.println("💾 Jogo salvo com sucesso!");
@@ -36,14 +45,11 @@ public class SaveManager {
         File f = new File(caminho);
         if (!f.exists()) {
             System.out.println("⚠️ Nenhum jogo salvo encontrado.");
-            return null; // ou retornar novo Jogador padrão
+            return null;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(caminho))) {
-            String line;
-
-            // título
-            line = reader.readLine();
+            String line = reader.readLine(); // título
             if (line == null) throw new IOException("Arquivo de save inválido.");
 
             String nome = nextValue(reader.readLine());
@@ -52,13 +58,14 @@ public class SaveManager {
             int posY = parseIntSafe(nextValue(reader.readLine()), 0);
 
             Jogador jogador = new Jogador(nome);
-            // ajustar dinheiro de forma segura
+
+            // ajustar dinheiro de forma segura (usa métodos existentes)
             int atual = jogador.getDinheiro();
             if (dinheiroSalvo > atual) jogador.ganharDinheiro(dinheiroSalvo - atual);
             else if (dinheiroSalvo < atual) jogador.gastarDinheiro(atual - dinheiroSalvo);
 
-            // posiciona jogador no mapa (valida internamente no mapa)
-            mapa.setPosicaoJogador(posX, posY);
+            // posiciona jogador no mapa
+            if (mapa != null) mapa.setPosicaoJogador(posX, posY);
 
             // lê equipe
             int qtdEquipe = parseIntSafe(nextValue(reader.readLine()), 0);
@@ -73,6 +80,7 @@ public class SaveManager {
                 Javamon j = criarJavamonPorNome(especie);
                 if (j != null) {
                     j.setLvl(nivel);
+                    // usa adicionarJavamon para respeitar lógica de equipe/box
                     jogador.adicionarJavamon(j);
                 } else {
                     System.out.println("⚠️ Não foi possível recriar Javamon: " + especie);
@@ -89,10 +97,14 @@ public class SaveManager {
                 String itemNome = dados[0].trim();
                 int quantidade = parseIntSafe(dados[1].trim(), 1);
 
-                // aqui assumimos que Itens tem um construtor (nome, tipo, preco)
-                // e que jogador.adicionarItem adiciona uma unidade por chamada.
-                for (int q = 0; q < quantidade; q++) {
-                    jogador.adicionarItem(new Itens(itemNome, "", 0));
+                // adiciona itens diretamente na bolsa (usa adicionarItem se existir)
+                if (jogador.getBolsa() != null) {
+                    for (int q = 0; q < quantidade; q++) {
+                        jogador.getBolsa().add(new Itens(itemNome, "", 0));
+                    }
+                } else {
+                    // fallback: tentar método adicionarItem
+                    try { for (int q = 0; q < quantidade; q++) jogador.adicionarItem(new Itens(itemNome, "", 0)); } catch (Throwable ignored) {}
                 }
             }
 
@@ -120,15 +132,34 @@ public class SaveManager {
         }
     }
 
+    private static String safe(String s) {
+        return s == null ? "" : s.replace("\n", "").replace("\r", "");
+    }
+
     // Fábrica simples: estenda com todas as espécies do seu jogo
     private static Javamon criarJavamonPorNome(String nome) {
         if (nome == null) return null;
         switch (nome.toLowerCase()) {
             case "feuermon":
-            case "feuer": // exemplo de alias
+            case "feuer":
                 return new Feuermon(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "aquaril":
+                return new Aquaril(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "hydreon":
+                return new Hydreon(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "ventrix":
+                return new Ventrix(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "terravox":
+                return new Terravox(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "mudrill":
+                return new Mudrill(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "cindrax":
+                return new Cindrax(nome, 70, 70, 25, 15, 20, 1, 0);
+            case "borealix":
+                return new Borealix(nome, 70, 70, 25, 15, 20, 1, 0);
             default:
                 return null;
         }
     }
 }
+// ...existing code...

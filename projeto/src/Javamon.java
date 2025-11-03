@@ -155,7 +155,68 @@ public abstract class Javamon{
     }
 
     public boolean estaVivo() {
-        return hpATUAL > 0;
+    // retorna true se tiver HP > 0
+        return this.getHpATUAL() > 0;
+    }
+
+    public void reviver() {
+        // se já estiver vivo, não faz nada
+        try {
+            // tenta delegar para um método existente (por ex. estaVivo/getHpATUAL/getHpMAX)
+            java.lang.reflect.Method estaVivoM = this.getClass().getMethod("estaVivo");
+            Object alive = estaVivoM.invoke(this);
+            if (alive instanceof Boolean && (Boolean) alive) return;
+        } catch (NoSuchMethodException ignore) {
+            // continua — pode não existir estaVivo()
+        } catch (Throwable ignore) {}
+
+        // obtém hpMax através de possíveis getters
+        int hpMax = 0;
+        String[] gettersMax = {"getHpMAX", "getHpMax", "getHpMaximo", "getHpMAXIMO"};
+        for (String g : gettersMax) {
+            try {
+                java.lang.reflect.Method m = this.getClass().getMethod(g);
+                Object r = m.invoke(this);
+                if (r instanceof Number) { hpMax = ((Number) r).intValue(); break; }
+            } catch (Throwable ignored) {}
+        }
+
+        // se não conseguiu via método, tenta campo direto
+        if (hpMax <= 0) {
+            try {
+                java.lang.reflect.Field f = this.getClass().getDeclaredField("hpMAX");
+                f.setAccessible(true);
+                Object v = f.get(this);
+                if (v instanceof Number) hpMax = ((Number) v).intValue();
+            } catch (Throwable ignored) {}
+        }
+
+        if (hpMax <= 0) hpMax = 1; // fallback seguro
+
+        int novoHp = Math.max(1, hpMax / 2);
+
+        // tenta setar via setters conhecidos
+        String[] settersAtual = {"setHpATUAL", "setHpAtual", "setHp"};
+        boolean aplicado = false;
+        for (String s : settersAtual) {
+            try {
+                java.lang.reflect.Method ms = this.getClass().getMethod(s, int.class);
+                ms.invoke(this, novoHp);
+                aplicado = true;
+                break;
+            } catch (Throwable ignored) {}
+        }
+
+        // limpa flag de nocaute/desmaiado se existir (ex.: "nocauteado", "desmaiado", "fainted")
+        String[] flags = {"nocauteado", "desmaiado", "fainted", "isFainted"};
+        for (String fName : flags) {
+            try {
+                java.lang.reflect.Field f = this.getClass().getDeclaredField(fName);
+                f.setAccessible(true);
+                if (f.getType() == boolean.class) { f.setBoolean(this, false); break; }
+                if (f.getType() == Boolean.class) { f.set(this, Boolean.FALSE); break; }
+            } catch (Throwable ignored) {}
+        }
     }
 
     public abstract void inicializarAtaques();
