@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 public class MapaGinasioAgua {
 
     private char[][] mapa = {
@@ -14,29 +12,14 @@ public class MapaGinasioAgua {
         "###########################".toCharArray()
     };
 
-    // posição inicial do jogador
     private int x = 1, y = 7;
     private int spawnX = 1, spawnY = 7;
-
     private Jogador jogador;
 
     public MapaGinasioAgua(Jogador jogador) {
         this.jogador = jogador;
-    }
-
-    public void entrar() {
         System.out.println("\n🌊 Você entrou no Ginásio da Água!");
         System.out.println("💧 A umidade no ar é intensa... mova-se com cuidado!");
-        System.out.println("Use W A S D para andar\n");
-
-        Scanner in = new Scanner(System.in);
-
-        while (true) {
-            mostrar();
-            System.out.print("> ");
-            char m = in.next().charAt(0);
-            mover(m);
-        }
     }
 
     public void mostrar() {
@@ -49,44 +32,47 @@ public class MapaGinasioAgua {
         }
     }
 
-    public void mover(char d) {
+    // Retorna true se saiu do ginásio
+    public boolean mover(char d) {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
         else if (d == 's') ny++;
         else if (d == 'a') nx--;
         else if (d == 'd') nx++;
-        else return;
+        else return false;
+
+        if (!dentro(nx, ny)) return false;
 
         char obst = mapa[ny][nx];
 
         // paredes
-        if (obst == '#') return;
+        if (obst == '#') return false;
 
         // água profunda
         if (obst == '○') {
             System.out.println("💧 Você caiu na água profunda e voltou ao início!");
             x = spawnX;
             y = spawnY;
-            return;
+            return false;
         }
 
         // correnteza direita
         if (obst == '>') {
             System.out.println("🌊 A correnteza te empurrou!");
             nx++;
-            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return; }
+            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return false; }
             obst = mapa[ny][nx];
-            if (obst == '#') return;
+            if (obst == '#') return false;
         }
 
         // correnteza esquerda
         if (obst == '<') {
             System.out.println("🌊 A correnteza te puxou!");
             nx--;
-            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return; }
+            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return false; }
             obst = mapa[ny][nx];
-            if (obst == '#') return;
+            if (obst == '#') return false;
         }
 
         // chão escorregadio
@@ -95,7 +81,7 @@ public class MapaGinasioAgua {
                 System.out.println("⚠️ Você escorregou e voltou ao início!");
                 x = spawnX;
                 y = spawnY;
-                return;
+                return false;
             }
         }
 
@@ -103,18 +89,18 @@ public class MapaGinasioAgua {
         if (obst == 'L') {
             System.out.println("\n💦 AQUA: Prepare-se para enfrentar o poder das marés!");
             iniciarBatalha();
-            return;
+            return false;
         }
 
         // saída
         if (obst == 'E') {
             System.out.println("\n↩️ Você deixou o Ginásio da Água");
-            new MapaLiga(jogador).entrar();
-            return;
+            return true;
         }
 
         x = nx;
         y = ny;
+        return false;
     }
 
     private boolean dentro(int nx, int ny) {
@@ -136,13 +122,11 @@ public class MapaGinasioAgua {
 
             if (inimigo.estaVivo()) {
                 System.out.println("\n💀 Você foi derrotado!");
-                new MapaLiga(jogador).entrar();
                 return;
             }
         }
 
         System.out.println("\n🏆 Você derrotou o Líder AQUA!");
         jogador.addVitoriaGym();
-        new MapaLiga(jogador).entrar();
     }
 }

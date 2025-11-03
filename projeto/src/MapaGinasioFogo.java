@@ -12,25 +12,13 @@ public class MapaGinasioFogo {
         "###############".toCharArray()
     };
 
-    // posição inicial do jogador
     private int x = 7, y = 7;
-
     private Jogador jogador;
 
     public MapaGinasioFogo(Jogador jogador) {
         this.jogador = jogador;
-    }
-
-    public void entrar() {
         System.out.println("\n🔥 Você entrou no Ginásio do Fogo!");
         System.out.println("🔥 O calor é insuportável... avance com cuidado!");
-
-        java.util.Scanner in = new java.util.Scanner(System.in);
-        while (true) {
-            mostrar();
-            System.out.print("> ");
-            mover(in.next().charAt(0));
-        }
     }
 
     public void mostrar() {
@@ -43,48 +31,47 @@ public class MapaGinasioFogo {
         }
     }
 
-    public void mover(char d) {
+    // Retorna true se saiu do ginásio
+    public boolean mover(char d) {
         int nx = x, ny = y;
         if (d == 'w') ny--;
         else if (d == 's') ny++;
         else if (d == 'a') nx--;
         else if (d == 'd') nx++;
-        else return;
+        else return false;
 
-        if (!dentro(nx, ny)) return;
+        if (!dentro(nx, ny)) return false;
 
         char destino = mapa[ny][nx];
 
-        // ✅ paredes e obstáculos (lava '^' e fogo '*')
-        if (mapa[ny][nx] == '#' || mapa[ny][nx] == '^' || mapa[ny][nx] == '*') return;
+        // paredes e obstáculos
+        if (mapa[ny][nx] == '#' || mapa[ny][nx] == '^' || mapa[ny][nx] == '*') return false;
 
         // Líder Pyros
         if (destino == 'L') {
             System.out.println("\n🔥 Pyros: Mostre seu poder, treinador!");
             iniciarBatalha();
-            return;
+            return false; // Continua no ginásio após batalha
         }
 
         // Saída
         if (destino == 'E') {
             System.out.println("\n↩️ Você deixou o Ginásio do Fogo");
-            new MapaLiga(jogador).entrar();
-            return;
+            return true; // Sai do ginásio
         }
 
         x = nx;
         y = ny;
+        return false;
     }
 
     private boolean dentro(int nx, int ny) {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
 
-    // ✅ sistema novo de batalha integrado com seu mapa
     private void iniciarBatalha() {
         System.out.println("\n🔥 Pyros: Prepare-se para queimar!");
 
-        // time do líder Pyros
         Javamon[] time = {
             new Feuermon("Flareon", 60, 60, 20, 12, 14, 5, 0),
             new Feuermon("Magmar",  70, 70, 22, 13, 12, 7, 0),
@@ -93,18 +80,15 @@ public class MapaGinasioFogo {
 
         for (Javamon inimigo : time) {
             System.out.println("\n🔥 Pyros enviou " + inimigo.getNome());
-
             Batalha.lutar(jogador, inimigo);
 
             if (inimigo.estaVivo()) {
                 System.out.println("\n💀 Você foi derrotado!");
-                new MapaLiga(jogador).entrar();
                 return;
             }
         }
 
         System.out.println("\n🏆 Você derrotou o Líder Pyros!");
-        jogador.addVitoriaGym(); // ✅ registra vitória
-        new MapaLiga(jogador).entrar();
+        jogador.addVitoriaGym();
     }
 }

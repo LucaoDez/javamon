@@ -1,8 +1,5 @@
-import java.util.Scanner;
-
 public class MapaLiga {
 
-    // 🗺️ Mapa da Ilha da Liga Javamon
     private char[][] mapa = {
         "#########################".toCharArray(),
         "#       F       T       #".toCharArray(),
@@ -13,32 +10,13 @@ public class MapaLiga {
         "#########################".toCharArray(),
     };
 
-    private int x = 12, y = 5; // posição inicial no 'S'
+    private int x = 12, y = 5;
     private Jogador jogador;
-    private Scanner in = new Scanner(System.in);
     private boolean saiu = false;
 
     public MapaLiga(Jogador jogador) {
         this.jogador = jogador;
-    }
-
-    public void entrar() {
         System.out.println("\n🔥 Bem-vindo à Ilha da Liga Javamon!");
-
-        while (true) {
-            mostrar();
-        System.out.print("Movimente-se (WASD): ");
-        String line = in.nextLine();
-
-        if (line.isEmpty()) continue;
-        mover(Character.toLowerCase(line.charAt(0)));
-
-        // ✅ Sai do loop se o jogador tiver saído da Liga
-        if (saiu) {
-            System.out.println("Saindo da Liga...");
-            break;
-        }
-        }
     }
 
     public void mostrar() {
@@ -51,7 +29,8 @@ public class MapaLiga {
         }
     }
 
-    public void mover(char d) {
+    // Retorna um novo mapa se entrar em ginásio, ou null se continuar aqui
+    public Object mover(char d) {
         int nx = x, ny = y;
 
         switch (d) {
@@ -59,39 +38,53 @@ public class MapaLiga {
             case 's' -> ny++;
             case 'a' -> nx--;
             case 'd' -> nx++;
-            default -> { return; }
+            default -> { return null; }
         }
 
-        if (!dentro(nx, ny)) return;
-        if (mapa[ny][nx] == '#') return;
+        if (!dentro(nx, ny)) return null;
+        if (mapa[ny][nx] == '#') return null;
 
         char destino = mapa[ny][nx];
 
-        // Ginásios
-        if (destino == 'F') { new MapaGinasioFogo(jogador).entrar(); return; }
-        if (destino == 'A') { new MapaGinasioAgua(jogador).entrar(); return; }
-        if (destino == 'T') { new MapaGinasioTerra(jogador).entrar(); return; }
-        if (destino == 'R') { new MapaGinasioAr(jogador).entrar(); return; }
+        // Ginásios - retorna o novo mapa
+        if (destino == 'F') {
+            System.out.println("\n🔥 Entrando no Ginásio do Fogo...");
+            return new MapaGinasioFogo(jogador);
+        }
+        if (destino == 'A') {
+            System.out.println("\n🌊 Entrando no Ginásio da Água...");
+            return new MapaGinasioAgua(jogador);
+        }
+        if (destino == 'T') {
+            System.out.println("\n⛰️ Entrando no Ginásio da Terra...");
+            return new MapaGinasioTerra(jogador);
+        }
+        if (destino == 'R') {
+            System.out.println("\n🌬️ Entrando no Ginásio do Ar...");
+            return new MapaGinasioAr(jogador);
+        }
 
         // Campeão
         if (destino == 'C') {
             if (jogador.getVitoriasGym() == 4) {
-                new MapaCampeao(jogador).entrar();
+                System.out.println("\n👑 Entrando no Salão do Campeão...");
+                return new MapaCampeao(jogador);
             } else {
                 System.out.println("\n❌ Você precisa derrotar os 4 líderes primeiro!");
+                return null;
             }
-            return;
         }
 
-        // ✅ SAIR DA LIGA CORRETAMENTE
+        // Sair da Liga
         if (destino == 'S') {
-            System.out.println("\n↩️ Você saiu do Hall!");
+            System.out.println("\n↩️ Você saiu da Liga!");
             saiu = true;
-            return;
+            return null;
         }
 
         x = nx;
         y = ny;
+        return null;
     }
 
     private boolean dentro(int nx, int ny) {

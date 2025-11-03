@@ -55,41 +55,41 @@ public class MapaCampeao {
         }
     }
 
-    public void mover(char d) {
-        int nx = x, ny = y;
+    public boolean mover(char d) {
+    int nx = x, ny = y;
 
-        if (d == 'w') ny--;
-        else if (d == 's') ny++;
-        else if (d == 'a') nx--;
-        else if (d == 'd') nx++;
-        else return;
+    if (d == 'w') ny--;
+    else if (d == 's') ny++;
+    else if (d == 'a') nx--;
+    else if (d == 'd') nx++;
+    else return false;
 
-        if (!dentro(nx, ny)) return;
-        char destino = mapa[ny][nx];
+    if (!dentro(nx, ny)) return false;
+    char destino = mapa[ny][nx];
 
-        if (mapa[ny][nx] == '#') return;
+    if (mapa[ny][nx] == '#') return false;
 
-
-        if (destino == 'O') {
-            System.out.println("🗿 As estátuas bloqueiam o caminho!");
-            return;
-        }
-
-        if (destino == 'C') {
-            System.out.println("\n👑 CAMPEÃO FINAL");
-            System.out.println("⚔️ Campeão Eclipse: \"Seu caminho termina aqui!\"");
-            enfrentarCampeao();
-            return;
-        }
-
-        if (destino == 'E') {
-            System.out.println("➡️ Você voltou ao mapa da liga!");
-            return;
-        }
-
-        x = nx;
-        y = ny;
+    if (destino == 'O') {
+        System.out.println("🗿 As estátuas bloqueiam o caminho!");
+        return false;
     }
+
+    if (destino == 'C') {
+        System.out.println("\n👑 CAMPEÃO FINAL");
+        System.out.println("⚔️ Campeão Eclipse: \"Seu caminho termina aqui!\"");
+        enfrentarCampeao();
+        return false;
+    }
+
+    if (destino == 'E') {
+        System.out.println("➡️ Você voltou ao mapa da liga!");
+        return true; // ← AQUI! Retorna true para sair do mapa
+    }
+
+    x = nx;
+    y = ny;
+    return false;
+}
 
     private boolean dentro(int nx, int ny) {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
