@@ -56,7 +56,6 @@ public class Mapa {
         }
     }
 
-    // getters / setter combinando X e Y
     public int getJogadorX() { return jogadorX; }
     public int getJogadorY() { return jogadorY; }
 
@@ -74,7 +73,6 @@ public class Mapa {
      private Javamon gerarSelvagem(Jogador jogador) {
         Random rand = new Random();
 
-        // lista de espécies disponíveis no jogo (adicione/remova conforme seu projeto)
         String[] especies = { "Feuermon", "Aquaril", "Hydreon", "Borealix", "Cindrax", "Terravox", "Ventrix", "Mudrill" };
 
         String especie = especies[rand.nextInt(especies.length)];
