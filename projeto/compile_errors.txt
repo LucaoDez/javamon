@@ -1,41 +1,7 @@
-src/Revive.java:13: error: cannot find symbol
-        if (alvo.isVivo()) {
-                ^
-  symbol:   method isVivo()
-  location: variable alvo of type Javamon
-src/Revive.java:18: error: cannot find symbol
-        alvo.reviver();
-            ^
-  symbol:   method reviver()
-  location: variable alvo of type Javamon
-src/SaveManager.java:76: error: cannot find symbol
-                    jogador.adicionarJavamon(j);
-                           ^
-  symbol:   method adicionarJavamon(Javamon)
-  location: variable jogador of type Jogador
-src/App.java:13: error: cannot find symbol
-            jogador.adicionarJavamon(new Feuermon("Feuermon", 70, 70, 25, 15, 20, 1, 0));
-                   ^
-  symbol:   method adicionarJavamon(Feuermon)
-  location: variable jogador of type Jogador
-src/Javacube.java:19: error: cannot find symbol
-        if (!alvo.isVivo()) {
-                 ^
-  symbol:   method isVivo()
-  location: variable alvo of type Javamon
-src/Javacube.java:25: error: cannot find symbol
-        double chance = 1.0 - ((double) alvo.getHpAtual() / alvo.getHpMax());
-                                            ^
-  symbol:   method getHpAtual()
-  location: variable alvo of type Javamon
-src/Javacube.java:25: error: cannot find symbol
-        double chance = 1.0 - ((double) alvo.getHpAtual() / alvo.getHpMax());
-                                                                ^
-  symbol:   method getHpMax()
-  location: variable alvo of type Javamon
-src/Pocao.java:16: error: cannot find symbol
-        if (!alvo.isVivo()) {
-                 ^
-  symbol:   method isVivo()
-  location: variable alvo of type Javamon
-8 errors
+src/App.java:32: error: method entrar in class MapaLiga cannot be applied to given types;
+                    ((MapaLiga) mapaAtual).entrar(jogador);
+                                          ^
+  required: no arguments
+  found:    Jogador
+  reason: actual and formal argument lists differ in length
+1 error

@@ -6,6 +6,8 @@ public class Mapa {
 
     private final char[][] grid;
     private int jogadorX, jogadorY;
+    private boolean entrouNaLiga = false;
+    private MapaLiga mapaLigaInstancia = null;
 
     public Mapa() {
 
@@ -75,10 +77,8 @@ public class Mapa {
         // lista de espécies disponíveis no jogo (adicione/remova conforme seu projeto)
         String[] especies = { "Feuermon", "Aquaril", "Hydreon", "Borealix", "Cindrax", "Terravox", "Ventrix", "Mudrill" };
 
-        // escolha aleatória (pode trocar por pesos se quiser)
         String especie = especies[rand.nextInt(especies.length)];
 
-        // determina nível baseado no javamon líder do jogador (se houver)
         int nivel = 1;
         if (jogador != null && !jogador.getEquipe().isEmpty()) {
             try {
@@ -92,7 +92,6 @@ public class Mapa {
             nivel = 1 + rand.nextInt(3);
         }
 
-        // criar instância concreta por espécie (ajuste stats se desejar)
         switch (especie.toLowerCase()) {
             case "feuermon":
                 return new Feuermon("Selvagem Feuermon", 70, 70, 25, 15, 20, nivel, 0);
@@ -115,12 +114,10 @@ public class Mapa {
         }
     }
 
-    // mover sem jogador (mantém compatibilidade)
     public void mover(char d) {
         mover(d, null);
     }
 
-    // mover com opção de passar o jogador (para iniciar batalhas/ligas)
     public void mover(char d, Jogador jogador) {
         int novoX = jogadorX;
         int novoY = jogadorY;
@@ -131,14 +128,14 @@ public class Mapa {
         else if (d == 'd') novoX++;
         else return;
 
-        if (!validaPosicao(novoX, novoY)) return; // evita acessar fora dos limites
-
+        if (!validaPosicao(novoX, novoY)) return; 
         char destino = grid[novoY][novoX];
         if (destino == '#') return;
 
         if (destino == 'L') {
             if (jogador != null) {
-                new MapaLiga(jogador).entrar();
+                this.mapaLigaInstancia = new MapaLiga(jogador);
+                this.entrouNaLiga = true;
             } else {
                 System.out.println("Portão da Liga (necessário jogador).");
             }
@@ -153,7 +150,6 @@ public class Mapa {
             if (chance < 0.20) {
                 System.out.println("\n⚠ Javamon selvagem apareceu!");
                 if (jogador != null) {
-                    // cria um inimigo de teste e inicia a batalha usando a API existente
                     Javamon selvagem = gerarSelvagem(jogador);
                     Batalha.lutar(jogador, selvagem);
                 } else {
@@ -164,7 +160,6 @@ public class Mapa {
     }
 
     public void entrar(Jogador jogador) {
-        // encontra 'L' no grid (posição fixa no mapa da classe)
         int lx = -1, ly = -1;
         for (int y = 0; y < grid.length && lx == -1; y++) {
             for (int x = 0; x < grid[y].length; x++) {
@@ -174,12 +169,10 @@ public class Mapa {
 
         if (lx != -1) {
             int leftX = lx - 1;
-            // tenta spawnar exatamente à esquerda do 'L'
             if (validaPosicao(leftX, ly) && grid[ly][leftX] != '#') {
                 jogadorX = leftX;
                 jogadorY = ly;
             } else {
-                // fallback: se a célula esquerda estiver bloqueada, tenta colocar ao lado (direita/cima/baixo) rapidamente
                 int[][] candidatos = { {lx + 1, ly}, {lx, ly - 1}, {lx, ly + 1} };
                 boolean colocado = false;
                 for (int[] c : candidatos) {
@@ -192,13 +185,11 @@ public class Mapa {
                     }
                 }
                 if (!colocado) {
-                    // último recurso: coloca ao lado esquerdo mesmo que seja parede (garante retorno à cidade)
                     jogadorX = Math.max(0, Math.min(grid[0].length - 1, leftX));
                     jogadorY = Math.max(0, Math.min(grid.length - 1, ly));
                 }
             }
         } else {
-            // se 'L' não existir por algum motivo, spawn padrão
             jogadorX = 2;
             jogadorY = 2;
         }
@@ -206,5 +197,10 @@ public class Mapa {
         mostrarMapa();
         System.out.println("Você apareceu próximo à entrada da Liga.");
     }
+
+    public boolean entrouNaLiga() { return entrouNaLiga; }
+    public MapaLiga getMapaLigaInstancia() { return mapaLigaInstancia; }
+    public void resetEntrouNaLiga() { entrouNaLiga = false; mapaLigaInstancia = null; }
+    // ...existing code...
 }
 // ...existing code...
