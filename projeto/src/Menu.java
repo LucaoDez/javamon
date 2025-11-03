@@ -73,6 +73,11 @@ public class Menu {
         // restaura HP de cada Javamon para o máximo (ajuste se preferir usar curar(valor))
         for (Javamon j : jogador.getEquipe()) {
             j.setHpATUAL(j.getHpMAX());
+            if (j.getAtaques() != null) {
+                for (Ataque a : j.getAtaques()) {
+                    a.restaurarPP();
+                }
+            }
         }
         System.out.println("Equipe curada.");
     }

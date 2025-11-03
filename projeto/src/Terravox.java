@@ -6,9 +6,9 @@ public class Terravox extends Javamon{
 
     @Override
     public void inicializarAtaques() {
-        ataques.add(new Ataque("Pancada de Areia", 17, "terra", 15));
-        ataques.add(new Ataque("Lâmina de ar", 25, "terra", 10));
-        ataques.add(new Ataque("Terremoto", 35, "terra", 5));
-        ataques.add(new Ataque("Meteoro de terra", 40, "terra", 3));
+        ataques.add(new Ataque("Pancada de Areia", 17, "terra", 15, 15));
+        ataques.add(new Ataque("Lâmina de ar", 25, "terra", 10, 10));
+        ataques.add(new Ataque("Terremoto", 35, "terra", 5, 5));
+        ataques.add(new Ataque("Meteoro de terra", 40, "terra", 3, 3));
     }
 }

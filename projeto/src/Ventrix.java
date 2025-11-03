@@ -6,10 +6,10 @@ public class Ventrix extends Javamon{
 
     @Override
     public void inicializarAtaques() {
-        ataques.add(new Ataque("Rajada de vento", 17, "ar", 15));
-        ataques.add(new Ataque("Lâmina de ar", 25, "ar", 10));
-        ataques.add(new Ataque("Vendaval", 35, "ar", 5));
-        ataques.add(new Ataque("Furacão", 40, "ar", 3));
+        ataques.add(new Ataque("Rajada de vento", 17, "ar", 15, 15));
+        ataques.add(new Ataque("Lâmina de ar", 25, "ar", 10, 10));
+        ataques.add(new Ataque("Vendaval", 35, "ar", 5, 5));
+        ataques.add(new Ataque("Furacão", 40, "ar", 3, 3));
     }
 }
 

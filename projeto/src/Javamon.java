@@ -54,8 +54,8 @@ public abstract class Javamon{
         System.out.println("Ataques de " + nome + ":");
         for (int i = 0; i < ataques.size(); i++) {
             Ataque a = ataques.get(i);
-            System.out.printf("%d) %s - Poder: %d - Tipo: %s - PP: %d%n",
-                          i + 1, a.getNome(), a.getPoder(), a.getTipo(), a.getPp());
+            System.out.printf("%d) %s - Poder: %d - Tipo: %s - PP: %d/%d%n",
+                          i + 1, a.getNome(), a.getPoder(), a.getTipo(), a.getPpATUAL(), a.getPpMAX());
         }   
     }
 
@@ -84,7 +84,7 @@ public abstract class Javamon{
             }
 
             Ataque ataqueEscolhido = ataques.get(escolha - 1);
-            if (ataqueEscolhido.getPp() <= 0) {
+            if (ataqueEscolhido.getPpATUAL() <= 0) {
                 System.out.println("Esse ataque não tem PP restante. Escolha outro.");
                 continue;
             }
@@ -123,7 +123,7 @@ public abstract class Javamon{
 
         Ataque ataque = ataques.get(indiceAtaque);
 
-        if (ataque.getPp() <= 0) {
+        if (ataque.getPpATUAL() <= 0) {
             System.out.println(ataque.getNome() + " está sem PP!");
             return;
         }

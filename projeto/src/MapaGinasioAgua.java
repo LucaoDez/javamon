@@ -4,13 +4,13 @@ public class MapaGinasioAgua {
 
     private char[][] mapa = {
         "###########################".toCharArray(),
-        "#~~~~~~~>>>~~~~~~~○~~~~~~ #".toCharArray(),
-        "#~#####~~~~~#####~~~~~###~#".toCharArray(),
-        "#~#   #~~~○~#   #~~~###~#L#".toCharArray(),
-        "#~# = #~~~### = #~~~○ #~#~#".toCharArray(),
-        "#~#   #~~~#     #~~~~~#~#~#".toCharArray(),
-        "#~#####<<<###=#####<<<#~#~#".toCharArray(),
-        "#~~~~~~~~~~~~~~~~~○~~~~~#E#".toCharArray(),
+        "#....○..>>>...=○....>....#".toCharArray(),
+        "#.##.#..###..###..#.###..#".toCharArray(),
+        "#.#.....#○...#...#..#...L#".toCharArray(),
+        "#.####.=#####..###..#.#..#".toCharArray(),
+        "#.#..#........○..#....#..#".toCharArray(),
+        "#.##.###<<<########<<<#.##".toCharArray(),
+        "#....○....##.....○....#.E#".toCharArray(),
         "###########################".toCharArray()
     };
 
@@ -60,8 +60,8 @@ public class MapaGinasioAgua {
 
         char obst = mapa[ny][nx];
 
-        // paredes e água rasa
-        if (obst == '#' || obst == '~') return;
+        // paredes
+        if (obst == '#') return;
 
         // água profunda
         if (obst == '○') {
@@ -75,27 +75,18 @@ public class MapaGinasioAgua {
         if (obst == '>') {
             System.out.println("🌊 A correnteza te empurrou!");
             nx++;
-            if (!dentro(nx, ny)) {
-                x = spawnX;
-                y = spawnY;
-                return;
-            }
+            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return; }
             obst = mapa[ny][nx];
-            if (obst == '#' || obst == '~') return;
+            if (obst == '#') return;
         }
 
         // correnteza esquerda
         if (obst == '<') {
             System.out.println("🌊 A correnteza te puxou!");
             nx--;
-            if (!dentro(nx, ny)) {
-                // se empurrar para fora do mapa, volta ao spawn
-                x = spawnX;
-                y = spawnY;
-                return;
-            }
+            if (!dentro(nx, ny)) { x = spawnX; y = spawnY; return; }
             obst = mapa[ny][nx];
-            if (obst == '#' || obst == '~') return;
+            if (obst == '#') return;
         }
 
         // chão escorregadio
@@ -130,11 +121,9 @@ public class MapaGinasioAgua {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
 
-    // ✅ Sistema de batalha igual ao do fogo
     private void iniciarBatalha() {
         System.out.println("\n🌊 AQUA: As ondas vão te engolir!");
 
-        // Time do líder AQUA
         Javamon[] time = {
             new Aquaril("Wartortle", 60, 60, 18, 14, 12, 5, 0),
             new Hydreon("Starmie",   75, 75, 22, 15, 18, 7, 0),

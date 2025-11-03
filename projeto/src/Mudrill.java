@@ -6,10 +6,10 @@ public class Mudrill extends Javamon{
 
     @Override
     public void inicializarAtaques() {
-        ataques.add(new Ataque("Pancada de Areia", 17, "água", 15));
-        ataques.add(new Ataque("Pedregulho", 25, "água", 10));
-        ataques.add(new Ataque("Terremoto", 35, "água", 5));
-        ataques.add(new Ataque("Meteoro de terra", 40, "água", 3));
+        ataques.add(new Ataque("Pancada de Areia", 17, "água", 15, 15));
+        ataques.add(new Ataque("Pedregulho", 25, "água", 10, 10));
+        ataques.add(new Ataque("Terremoto", 35, "água", 5, 5));
+        ataques.add(new Ataque("Meteoro de terra", 40, "água", 3, 3));
     }
 }
 

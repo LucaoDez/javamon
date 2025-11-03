@@ -6,9 +6,9 @@ public class Cindrax extends Javamon{
 
     @Override
     public void inicializarAtaques() {
-        ataques.add(new Ataque("Brasa", 15, "fogo", 15));
-        ataques.add(new Ataque("Labareda", 25, "fogo", 10));
-        ataques.add(new Ataque("Chamas", 35, "fogo", 5));
-        ataques.add(new Ataque("Incendio", 45, "fogo", 3));
+        ataques.add(new Ataque("Brasa", 15, "fogo", 15, 15));
+        ataques.add(new Ataque("Labareda", 25, "fogo", 10, 10));
+        ataques.add(new Ataque("Chamas", 35, "fogo", 5, 5));
+        ataques.add(new Ataque("Incendio", 45, "fogo", 3, 3));
     }
 }

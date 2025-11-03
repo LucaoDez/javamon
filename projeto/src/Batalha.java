@@ -71,7 +71,7 @@ public class Batalha {
                 List<Ataque> listaAtks = inimigo.getAtaques(); // adicionar getter em Javamon se não existir
                 if (listaAtks != null && !listaAtks.isEmpty()) {
                     for (int i = 0; i < listaAtks.size(); i++) {
-                        if (listaAtks.get(i).getPp() > 0) {
+                        if (listaAtks.get(i).getPpATUAL() > 0) {
                             atkIndex = i;
                             break;
                         }
