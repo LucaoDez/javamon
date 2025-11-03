@@ -36,7 +36,7 @@ public class MapaGinasioAr {
         }
     }
 
-    private void mostrar() {
+    public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {
                 if (i == y && j == x) System.out.print("@");
@@ -46,7 +46,7 @@ public class MapaGinasioAr {
         }
     }
 
-    private void mover(char d) {
+    public void mover(char d) {
         int nx = x, ny = y;
 
         if (d == 'w') ny--;
@@ -93,7 +93,7 @@ public class MapaGinasioAr {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
 
-     private void resetPosicao() {
+    private void resetPosicao() {
         // voltar ao spawn ou posição segura
         x = 1; y = 8;
     }
