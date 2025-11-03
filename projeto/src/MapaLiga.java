@@ -27,11 +27,17 @@ public class MapaLiga {
 
         while (true) {
             mostrar();
-            System.out.print("Movimente-se (WASD): ");
-            String line = in.nextLine();
+        System.out.print("Movimente-se (WASD): ");
+        String line = in.nextLine();
 
-            if (line.isEmpty()) continue;
-            mover(Character.toLowerCase(line.charAt(0)));
+        if (line.isEmpty()) continue;
+        mover(Character.toLowerCase(line.charAt(0)));
+
+        // ✅ Sai do loop se o jogador tiver saído da Liga
+        if (saiu) {
+            System.out.println("Saindo da Liga...");
+            break;
+        }
         }
     }
 
