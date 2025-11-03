@@ -29,21 +29,13 @@ public class App {
 
                     // detectar entrada na Liga e trocar o mapa aqui
                 if (m.entrouNaLiga()) {
-                    mapaAtual = new MapaLiga(); // cria um novo mapa da Liga
-                    ((MapaLiga) mapaAtual).entrar(); // agora sim o objeto é MapaLiga
+                    mapaAtual = new MapaLiga(jogador); // cria um novo mapa da Liga
+                    ((MapaLiga) mapaAtual).entrar(); // passar jogador (ajuste se a assinatura for diferente)
                     continue; // evita que o resto do código desse loop rode ainda com o mapa antigo
                 }
-
                 } else if (mapaAtual instanceof MapaLiga) {
                     MapaLiga ml = (MapaLiga) mapaAtual;
                     ml.mover(comando);
-
-                    if (ml.saiuDaLiga()) {
-                        ml.resetSair();
-                        mapaAtual = mapaCidade;
-                        mapaCidade.entrar(jogador); // spawn junto ao 'L'
-                        continue;
-                    }
                 }
             }
 
