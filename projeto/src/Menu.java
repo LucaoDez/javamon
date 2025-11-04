@@ -60,7 +60,7 @@ public class Menu {
         System.out.println("2 - revive (50$)");
         System.out.println("3 - javaball (10$)");
         System.out.println("4 - voltar");
-        System.out.println("escola:");
+        System.out.println("Escolha:");
         int e = sc.nextInt();
         sc.nextLine();
 

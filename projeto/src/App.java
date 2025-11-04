@@ -19,7 +19,7 @@ public class App {
                 ((Mapa) mapaAtual).mostrarMapa();
             } else if (mapaAtual instanceof MapaLiga) {
                 ((MapaLiga) mapaAtual).mostrar();
-            } else if (mapaAtual instanceof MapaGinasioFogo) {
+            } else if (mapaAtual instanceof MapaGinaoFogo) {
                 ((MapaGinasioFogo) mapaAtual).mostrar();
             } else if (mapaAtual instanceof MapaGinasioAgua) {
                 ((MapaGinasioAgua) mapaAtual).mostrar();
