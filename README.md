@@ -25,7 +25,8 @@ java src/Main
 
 - O jogo será iniciado no terminal (modo CLI).
 
-  <img width="633" height="150" alt="image" src="https://github.com/user-attachments/assets/f2542b3c-8301-438e-b3fc-cd0c8e18fc61" />  
+  <img width="625" height="230" alt="image" src="https://github.com/user-attachments/assets/9b9ba7c0-dfa1-4b50-8d1c-723846069996" />
+
 
 
 🧱 Estrutura de Pacotes e Classes:
@@ -59,14 +60,19 @@ Classe principal que inicia o jogo
 
 📸 Prints:
 Ao iniciar o jogo pela primeira vez, aparecerá a seguinte tela:
-<img width="633" height="150" alt="image" src="https://github.com/user-attachments/assets/efce81f3-e699-44ca-92f2-8ab2c83564d7" />
+<img width="625" height="230" alt="image" src="https://github.com/user-attachments/assets/9f1ee555-a074-465e-bfee-1861a94b511a" />
+
 
 
 Após usar W, A, S ou D, o jogador "@" irá se movimentar pelo mapa:
-<img width="603" height="105" alt="image" src="https://github.com/user-attachments/assets/443d579b-4d85-40a2-b7cf-c26b7c750f10" />
-<img width="624" height="111" alt="image" src="https://github.com/user-attachments/assets/da46a478-b0ae-4651-b0ba-888a9dd47a1c" />
-<img width="633" height="111" alt="image" src="https://github.com/user-attachments/assets/1ccede2e-e904-4741-b729-9a0a49501e56" />
-<img width="604" height="107" alt="image" src="https://github.com/user-attachments/assets/f9446ce9-a5f0-4586-8234-c56d33e0df1e" />
+<img width="619" height="226" alt="image" src="https://github.com/user-attachments/assets/0e4871e1-cfab-4ac2-b257-6098caca9274" />
+
+<img width="612" height="222" alt="image" src="https://github.com/user-attachments/assets/c5b0e492-b344-43cc-b112-845601efd738" />
+
+<img width="628" height="221" alt="image" src="https://github.com/user-attachments/assets/aef7b7a7-24e0-470f-bc66-1f8d4af369ff" />
+
+<img width="617" height="227" alt="image" src="https://github.com/user-attachments/assets/39314d6a-5350-4926-aac9-1700e49e4ffc" />
+
 
 
 Apertando M, o menu do jogo aparecerá, mostrando as opções disponíveis ao jogador:
@@ -86,7 +92,8 @@ Apertando 3 no menu, o terminal mostrará o inventario do jogador, cintendo os i
 
 
 Apertando 4 no menu, o terminal mostrará a loja:  
-<img width="190" height="121" alt="image" src="https://github.com/user-attachments/assets/e41e17d5-de11-438e-aed1-048684e97206" />
+<img width="163" height="123" alt="image" src="https://github.com/user-attachments/assets/01fe13b1-aa21-4f1f-8df8-89c696e918b1" />
+
 
 
 Apertando 5, o jogo será salvo:  
@@ -101,7 +108,8 @@ Apertando 7, o código será encerrado:
 
 
 Apertando 8, o jogador voltará ao mapa:  
-<img width="610" height="311" alt="image" src="https://github.com/user-attachments/assets/3ea657b0-f715-4c89-9648-beff00a17dca" />
+<img width="608" height="432" alt="image" src="https://github.com/user-attachments/assets/9118e20c-b071-429d-972b-a6adb1c6089e" />
+
 
 
 No mapa, ao apertar B(função temporária), o jogador começará uma batalha com um javamon selvagem:
@@ -117,3 +125,22 @@ Apertando 2, o jogador poderá usar um de seus itens em seu inventário, e apert
 
 Apertando 4, o jogador terá uma chance de fugir da batalha:  
 <img width="414" height="197" alt="image" src="https://github.com/user-attachments/assets/16c34891-b96d-45b7-9f55-c874cbeaed4e" />
+
+
+Após o jogador entrar no mapa da liga(letra "L" no mapa), o jogador terá que derrotar quatro líderes de ginásio para poder enfrentar o campeao  
+<img width="273" height="141" alt="image" src="https://github.com/user-attachments/assets/962e6a70-b1c8-4f92-8eb5-9862949c94c8" />
+
+
+<img width="352" height="242" alt="image" src="https://github.com/user-attachments/assets/f0b19532-d463-4320-8b81-116c569470eb" />  
+
+
+<img width="278" height="233" alt="image" src="https://github.com/user-attachments/assets/4b29b274-e115-4667-a6f1-23a03ff11531" />
+
+
+<img width="384" height="228" alt="image" src="https://github.com/user-attachments/assets/e2f0968b-8b65-4c38-b7e7-87878405c4cf" />
+
+
+<img width="340" height="215" alt="image" src="https://github.com/user-attachments/assets/6476bee4-f730-40b5-b659-4cd050e0df7f" />
+
+
+
