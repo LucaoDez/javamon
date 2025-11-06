@@ -93,36 +93,46 @@ public class Batalha {
                 }
             }
 
-            // Verifica se o Javamon ativo desmaiou e troca automaticamente
+            // Verifica se o Javamon ativo desmaiou e força troca
             if (!ativo.estaVivo()) {
                 System.out.println("💀 " + ativo.getNome() + " desmaiou!");
                 
-                // Remove o Javamon desmaiado da primeira posição
-                jogador.getEquipe().remove(0);
+                // Verifica se ainda tem Javamon vivo na equipe
+                boolean temVivo = false;
+                for (Javamon j : jogador.getEquipe()) {
+                    if (j.estaVivo()) {
+                        temVivo = true;
+                        break;
+                    }
+                }
                 
-                // Verifica se ainda tem Javamon disponível
-                if (jogador.getEquipe().isEmpty()) {
+                if (!temVivo) {
                     System.out.println("\n❌ Você não tem mais Javamon para lutar!");
                     System.out.println("💀 Você foi derrotado!");
                     return;
                 }
                 
-                // Mostra Javamon disponíveis para troca forçada
+                // Força troca para um Javamon vivo
                 System.out.println("\nEscolha um Javamon para continuar:");
-                if (trocarJavamon(jogador, sc)) {
+                if (trocarJavamonForcado(jogador, sc)) {
                     ativo = jogador.getEquipe().get(0);
                     System.out.println("➡️ " + ativo.getNome() + " entrou em campo!");
                 } else {
-                    // Se não conseguiu trocar, pega o primeiro disponível
-                    ativo = jogador.getEquipe().get(0);
-                    System.out.println("➡️ " + ativo.getNome() + " foi enviado automaticamente!");
+                    // Se cancelou, escolhe automaticamente o primeiro vivo
+                    for (int i = 1; i < jogador.getEquipe().size(); i++) {
+                        if (jogador.getEquipe().get(i).estaVivo()) {
+                            // Troca posições: desmaiado vai pro final, vivo vem pra frente
+                            Javamon desmaiado = jogador.getEquipe().get(0);
+                            Javamon vivo = jogador.getEquipe().get(i);
+                            jogador.getEquipe().set(0, vivo);
+                            jogador.getEquipe().set(i, desmaiado);
+                            ativo = vivo;
+                            System.out.println("➡️ " + ativo.getNome() + " foi enviado automaticamente!");
+                            break;
+                        }
+                    }
                 }
             }
-        }
-
-        if (!inimigo.estaVivo()) {
-            System.out.println("\n🎉 " + inimigo.getNome() + " foi derrotado!");
-            ativo.ganharExperiencia(20);
         }
     }
 
@@ -280,6 +290,58 @@ public class Batalha {
         
         System.out.println("✅ Volte, " + atual.getNome() + "!");
         System.out.println("➡️ Vá, " + novo.getNome() + "!");
+        
+        return true;
+    }
+
+    private static boolean trocarJavamonForcado(Jogador jogador, Scanner sc) {
+        List<Javamon> equipe = jogador.getEquipe();
+        
+        System.out.println("\n=== SUA EQUIPE ===");
+        
+        for (int i = 0; i < equipe.size(); i++) {
+            Javamon j = equipe.get(i);
+            String status = j.estaVivo() ? "HP: " + j.getHpATUAL() + "/" + j.getHpMAX() : "DESMAIADO";
+            System.out.println((i + 1) + " - " + j.getNome() + " (" + status + ")");
+        }
+        System.out.println("0 - Escolher automaticamente");
+        
+        System.out.print("Trocar para qual Javamon? ");
+        int escolha;
+        try {
+            escolha = Integer.parseInt(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return false;
+        }
+
+        if (escolha == 0) {
+            return false; // Vai escolher automaticamente
+        }
+
+        if (escolha < 1 || escolha > equipe.size()) {
+            System.out.println("❌ Escolha inválida.");
+            return false;
+        }
+
+        int indice = escolha - 1;
+        
+        if (indice == 0) {
+            System.out.println("❌ Esse Javamon está desmaiado!");
+            return trocarJavamonForcado(jogador, sc); // Tenta de novo
+        }
+
+        Javamon novo = equipe.get(indice);
+        
+        if (!novo.estaVivo()) {
+            System.out.println("❌ " + novo.getNome() + " está desmaiado!");
+            return trocarJavamonForcado(jogador, sc); // Tenta de novo
+        }
+
+        // Realiza a troca - desmaiado vai para a posição escolhida
+        Javamon desmaiado = equipe.get(0);
+        equipe.set(indice, desmaiado);
+        equipe.set(0, novo);
         
         return true;
     }

@@ -1,7 +1,0 @@
-=== SAVE JAVAMON ===
-Nome=Treinador
-Dinheiro=100
-PosX=56
-PosY=2
-Equipe=0
-Itens=0
