@@ -1,11 +1,8 @@
 === SAVE JAVAMON ===
 Nome=Treinador
-Dinheiro=100
+Dinheiro=30
 PosX=55
 PosY=1
 Equipe=1
 Ignis,1
-Itens=3
-Poção,19
-Revive,50
-Pokébola,9
+Itens=0
