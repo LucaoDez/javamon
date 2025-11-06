@@ -139,12 +139,10 @@ public class Batalha {
         }
 
         System.out.println("\n=== ITENS DISPONÍVEIS ===");
-        List<Itens> itens = new ArrayList<>(bolsa.keySet());
         
-        for (int i = 0; i < itens.size(); i++) {
-            String item = itens.get(i);
-            int quantidade = bolsa.get(item);
-            System.out.println((i + 1) + " - " + item + " (x" + quantidade + ")");
+        for (int i = 0; i < bolsa.size(); i++) {
+            Itens item = bolsa.get(i);
+            System.out.println((i + 1) + " - " + item.getNome() + " (x" + item.getQuantidade() + ")");
         }
         System.out.println("0 - Cancelar");
         
@@ -162,19 +160,20 @@ public class Batalha {
             return false;
         }
 
-        if (escolha < 1 || escolha > itens.size()) {
+        if (escolha < 1 || escolha > bolsa.size()) {
             System.out.println("❌ Item inválido.");
             return false;
         }
 
-        String itemEscolhido = Itens.get(escolha - 1);
+        Itens itemEscolhido = bolsa.get(escolha - 1);
         
         // Escolher em qual Javamon usar o item
         System.out.println("\nUsar em qual Javamon?");
         List<Javamon> equipe = jogador.getEquipe();
         for (int i = 0; i < equipe.size(); i++) {
             Javamon j = equipe.get(i);
-            System.out.println((i + 1) + " - " + j.getNome() + " (HP: " + j.getHpATUAL() + "/" + j.getHpMAX() + ")");
+            String status = j.estaVivo() ? "HP: " + j.getHpATUAL() + "/" + j.getHpMAX() : "DESMAIADO";
+            System.out.println((i + 1) + " - " + j.getNome() + " (" + status + ")");
         }
         System.out.println("0 - Cancelar");
         
@@ -199,21 +198,24 @@ public class Batalha {
 
         Javamon alvo = equipe.get(indiceJavamon - 1);
         
-        // Aplicar efeito do item
-        boolean usado = aplicarItem(itemEscolhido, alvo);
-        
-        if (usado) {
+        // Aplicar efeito do item usando o método da própria classe Itens
+        try {
+            itemEscolhido.usar(alvo);
+            
             // Diminui quantidade do item
-            int qtd = bol.get(itemEscolhido);
-            if (qtd <= 1) {
-                bolsa.remove(itemEscolhido);
-            } else {
-                bolsa.put(itemEscolhido, qtd - 1);
+            itemEscolhido.removerQuantidade(1);
+            
+            // Remove da bolsa se acabou
+            if (itemEscolhido.getQuantidade() <= 0) {
+                bolsa.remove(escolha - 1);
+                System.out.println("❌ " + itemEscolhido.getNome() + " acabou!");
             }
+            
             return true; // Usou um turno
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao usar o item: " + e.getMessage());
+            return false;
         }
-        
-        return false;
     }
 
     /**
