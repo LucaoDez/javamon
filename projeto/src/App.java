@@ -5,7 +5,10 @@ public class App {
         Scanner sc = new Scanner(System.in);
         Mapa mapaCidade = new Mapa();
         Jogador jogador = SaveManager.carregar("save.txt", mapaCidade);
-        if (jogador == null) jogador = new Jogador("Treinador");
+        if (jogador == null){ 
+            jogador = new Jogador("Treinador");
+            jogador.adicionarJavamon(new Feuermon("Ignis", 100, 100, 30, 20, 25, 5, 0));
+        }
 
         // mapa atual começa na cidade
         Object mapaAtual = mapaCidade;
