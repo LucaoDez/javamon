@@ -1,4 +1,4 @@
-import java.util.*;
+    import java.util.*;
 
 public class Batalha {
     public static void lutar(Jogador jogador, Javamon inimigo) {
@@ -11,7 +11,7 @@ public class Batalha {
             return;
         }
 
-        Scanner sc = new Scanner(System.in); // NÃO feche este scanner (não chamar sc.close())
+        Scanner sc = new Scanner(System.in);
         Random rand = new Random();
 
         if (jogador.getEquipe() == null || jogador.getEquipe().isEmpty()) {
@@ -23,8 +23,10 @@ public class Batalha {
 
         System.out.println("\nUm " + inimigo.getNome() + " selvagem apareceu!");
         while (ativo.estaVivo() && inimigo.estaVivo()) {
-            System.out.println("\nSeu: " + ativo.getNome() + " HP " + ativo.getHpATUAL() + "/" + ativo.getHpMAX());
+            System.out.println("\n" + "=".repeat(50));
+            System.out.println("Seu: " + ativo.getNome() + " HP " + ativo.getHpATUAL() + "/" + ativo.getHpMAX());
             System.out.println("Inimigo: " + inimigo.getNome() + " HP " + inimigo.getHpATUAL() + "/" + inimigo.getHpMAX());
+            System.out.println("=".repeat(50));
 
             System.out.println("1 - Atacar | 2 - Usar Item | 3 - Mudar Javamon | 4 - Fugir");
             System.out.print("Escolha: ");
@@ -37,23 +39,26 @@ public class Batalha {
                 continue;
             }
 
+            boolean turnoJogador = true;
+
             if (escolha == 1) {
-                // mostra ataques e solicita escolha — exige que Javamon tenha mostrarAtaques() ou escolherAtaque(Scanner)
                 int indiceAtaque;
                 try {
-                    indiceAtaque = ativo.escolherAtaque(sc); // implementar em Javamon
+                    indiceAtaque = ativo.escolherAtaque(sc);
                 } catch (UnsupportedOperationException ex) {
-                    // fallback: escolher ataque 0 se método não existir
                     indiceAtaque = 0;
                 }
 
                 if (indiceAtaque >= 0) {
-                    ativo.atacar(inimigo, indiceAtaque); // implementar lógica de dano em Javamon.atacar(...)
+                    ativo.atacar(inimigo, indiceAtaque);
                 }
             } else if (escolha == 2) {
-                System.out.println("Sistema de itens não implementado.");
+                turnoJogador = usarItem(jogador, sc);
             } else if (escolha == 3) {
-                System.out.println("Troca de Javamon não implementada.");
+                turnoJogador = trocarJavamon(jogador, sc);
+                if (turnoJogador) {
+                    ativo = jogador.getEquipe().get(0);
+                }
             } else if (escolha == 4) {
                 if (rand.nextInt(100) < 60) {
                     System.out.println("🏃 Você fugiu da batalha!");
@@ -63,12 +68,13 @@ public class Batalha {
                 }
             } else {
                 System.out.println("Opção inválida.");
+                turnoJogador = false;
             }
 
-            // turno do inimigo (IA simples)
-            if (inimigo.estaVivo()) {
+            // Turno do inimigo (apenas se o jogador usou turno)
+            if (turnoJogador && inimigo.estaVivo() && ativo.estaVivo()) {
                 int atkIndex = -1;
-                List<Ataque> listaAtks = inimigo.getAtaques(); // adicionar getter em Javamon se não existir
+                List<Ataque> listaAtks = inimigo.getAtaques();
                 if (listaAtks != null && !listaAtks.isEmpty()) {
                     for (int i = 0; i < listaAtks.size(); i++) {
                         if (listaAtks.get(i).getPpATUAL() > 0) {
@@ -86,16 +92,221 @@ public class Batalha {
                     System.out.println(ativo.getNome() + " recebeu 5 de dano!\n");
                 }
             }
+
+            // Verifica se o Javamon ativo desmaiou e troca automaticamente
+            if (!ativo.estaVivo()) {
+                System.out.println("💀 " + ativo.getNome() + " desmaiou!");
+                
+                // Remove o Javamon desmaiado da primeira posição
+                jogador.getEquipe().remove(0);
+                
+                // Verifica se ainda tem Javamon disponível
+                if (jogador.getEquipe().isEmpty()) {
+                    System.out.println("\n❌ Você não tem mais Javamon para lutar!");
+                    System.out.println("💀 Você foi derrotado!");
+                    return;
+                }
+                
+                // Mostra Javamon disponíveis para troca forçada
+                System.out.println("\nEscolha um Javamon para continuar:");
+                if (trocarJavamon(jogador, sc)) {
+                    ativo = jogador.getEquipe().get(0);
+                    System.out.println("➡️ " + ativo.getNome() + " entrou em campo!");
+                } else {
+                    // Se não conseguiu trocar, pega o primeiro disponível
+                    ativo = jogador.getEquipe().get(0);
+                    System.out.println("➡️ " + ativo.getNome() + " foi enviado automaticamente!");
+                }
+            }
         }
 
         if (!inimigo.estaVivo()) {
-            System.out.println("🎉 " + inimigo.getNome() + " foi derrotado!");
-            ativo.ganharExperiencia(20); // garante existência deste método em Javamon
-            // jogador.ganharDinheiro(15); // usar se existir em Jogador
-        } else {
-            System.out.println("💀 " + ativo.getNome() + " desmaiou!");
+            System.out.println("\n🎉 " + inimigo.getNome() + " foi derrotado!");
+            ativo.ganharExperiencia(20);
+        }
+    }
+
+    /**
+     * Sistema de uso de itens
+     * @return true se usou um turno, false se cancelou
+     */
+    private static boolean usarItem(Jogador jogador, Scanner sc) {
+        List<Itens> bolsa = jogador.getBolsa();
+        
+        if (bolsa == null || bolsa.isEmpty()) {
+            System.out.println("\n❌ Sua mochila está vazia!");
+            return false;
         }
 
-        // não fechar sc (System.in) aqui
+        System.out.println("\n=== ITENS DISPONÍVEIS ===");
+        List<Itens> itens = new ArrayList<>(bolsa.keySet());
+        
+        for (int i = 0; i < itens.size(); i++) {
+            String item = itens.get(i);
+            int quantidade = bolsa.get(item);
+            System.out.println((i + 1) + " - " + item + " (x" + quantidade + ")");
+        }
+        System.out.println("0 - Cancelar");
+        
+        System.out.print("Escolha um item: ");
+        int escolha;
+        try {
+            escolha = Integer.parseInt(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return false;
+        }
+
+        if (escolha == 0) {
+            System.out.println("❌ Cancelado.");
+            return false;
+        }
+
+        if (escolha < 1 || escolha > itens.size()) {
+            System.out.println("❌ Item inválido.");
+            return false;
+        }
+
+        String itemEscolhido = Itens.get(escolha - 1);
+        
+        // Escolher em qual Javamon usar o item
+        System.out.println("\nUsar em qual Javamon?");
+        List<Javamon> equipe = jogador.getEquipe();
+        for (int i = 0; i < equipe.size(); i++) {
+            Javamon j = equipe.get(i);
+            System.out.println((i + 1) + " - " + j.getNome() + " (HP: " + j.getHpATUAL() + "/" + j.getHpMAX() + ")");
+        }
+        System.out.println("0 - Cancelar");
+        
+        System.out.print("Escolha: ");
+        int indiceJavamon;
+        try {
+            indiceJavamon = Integer.parseInt(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return false;
+        }
+
+        if (indiceJavamon == 0) {
+            System.out.println("❌ Cancelado.");
+            return false;
+        }
+
+        if (indiceJavamon < 1 || indiceJavamon > equipe.size()) {
+            System.out.println("❌ Javamon inválido.");
+            return false;
+        }
+
+        Javamon alvo = equipe.get(indiceJavamon - 1);
+        
+        // Aplicar efeito do item
+        boolean usado = aplicarItem(itemEscolhido, alvo);
+        
+        if (usado) {
+            // Diminui quantidade do item
+            int qtd = bol.get(itemEscolhido);
+            if (qtd <= 1) {
+                bolsa.remove(itemEscolhido);
+            } else {
+                bolsa.put(itemEscolhido, qtd - 1);
+            }
+            return true; // Usou um turno
+        }
+        
+        return false;
+    }
+
+    /**
+     * Aplica o efeito do item no Javamon
+     */
+    private static boolean aplicarItem(String item, Javamon javamon) {
+        switch (item.toLowerCase()) {
+            case "poção":
+            case "pocao":
+                int cura = 20;
+                javamon.curar(cura);
+                System.out.println("✅ " + javamon.getNome() + " recuperou " + cura + " HP!");
+                return true;
+                
+            case "reviver":
+            case "revive":
+                if (javamon.estaVivo()) {
+                    System.out.println("❌ " + javamon.getNome() + " já está consciente!");
+                    return false;
+                }
+                javamon.reviver();
+                System.out.println("✅ " + javamon.getNome() + " foi revivido!");
+                return true;
+                
+            default:
+                System.out.println("❌ Item desconhecido: " + item);
+                return false;
+        }
+    }
+
+    /**
+     * Sistema de troca de Javamon
+     * @return true se trocou com sucesso, false se cancelou
+     */
+    private static boolean trocarJavamon(Jogador jogador, Scanner sc) {
+        List<Javamon> equipe = jogador.getEquipe();
+        
+        if (equipe.size() <= 1) {
+            System.out.println("\n❌ Você só tem um Javamon na equipe!");
+            return false;
+        }
+
+        System.out.println("\n=== SUA EQUIPE ===");
+        Javamon atual = equipe.get(0);
+        
+        for (int i = 0; i < equipe.size(); i++) {
+            Javamon j = equipe.get(i);
+            String status = j.estaVivo() ? "HP: " + j.getHpATUAL() + "/" + j.getHpMAX() : "DESMAIADO";
+            String marcador = (i == 0) ? " [EM BATALHA]" : "";
+            System.out.println((i + 1) + " - " + j.getNome() + " (" + status + ")" + marcador);
+        }
+        System.out.println("0 - Cancelar");
+        
+        System.out.print("Trocar para qual Javamon? ");
+        int escolha;
+        try {
+            escolha = Integer.parseInt(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Entrada inválida.");
+            return false;
+        }
+
+        if (escolha == 0) {
+            System.out.println("❌ Cancelado.");
+            return false;
+        }
+
+        if (escolha < 1 || escolha > equipe.size()) {
+            System.out.println("❌ Escolha inválida.");
+            return false;
+        }
+
+        int indice = escolha - 1;
+        
+        if (indice == 0) {
+            System.out.println("❌ " + atual.getNome() + " já está em batalha!");
+            return false;
+        }
+
+        Javamon novo = equipe.get(indice);
+        
+        if (!novo.estaVivo()) {
+            System.out.println("❌ " + novo.getNome() + " está desmaiado!");
+            return false;
+        }
+
+        // Realiza a troca
+        equipe.set(indice, atual);
+        equipe.set(0, novo);
+        
+        System.out.println("✅ Volte, " + atual.getNome() + "!");
+        System.out.println("➡️ Vá, " + novo.getNome() + "!");
+        
+        return true;
     }
 }

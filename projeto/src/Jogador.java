@@ -7,9 +7,9 @@ public class Jogador {
     private int dinheiro;
 
     private static final int MAX_EQUIPE = 6;
-    private final List<Javamon> equipe;
-    private final List<Javamon> box;
-    private final List<Itens> bolsa;
+    private List<Javamon> equipe;
+    private List<Javamon> box;
+    private List<Itens> bolsa;
     private int vitoriasGym = 0;
     private boolean seTornouCampeao = false;
 
@@ -137,6 +137,7 @@ public class Jogador {
         vitoriasGym++;
         System.out.println("🏅 Vitória registrada! Total de ginásios vencidos: " + vitoriasGym);
     }
+
     public void resetVitoriasGym() { vitoriasGym = 0; }
     public boolean getSeTornouCampeao() { return seTornouCampeao; }
     public void setSeTornouCampeao() {
