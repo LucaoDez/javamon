@@ -1,4 +1,4 @@
-    import java.util.*;
+import java.util.*;
 
 public class Batalha {
     public static void lutar(Jogador jogador, Javamon inimigo) {
@@ -215,34 +215,6 @@ public class Batalha {
         } catch (Exception e) {
             System.out.println("❌ Erro ao usar o item: " + e.getMessage());
             return false;
-        }
-    }
-
-    /**
-     * Aplica o efeito do item no Javamon
-     */
-    private static boolean aplicarItem(String item, Javamon javamon) {
-        switch (item.toLowerCase()) {
-            case "poção":
-            case "pocao":
-                int cura = 20;
-                javamon.curar(cura);
-                System.out.println("✅ " + javamon.getNome() + " recuperou " + cura + " HP!");
-                return true;
-                
-            case "reviver":
-            case "revive":
-                if (javamon.estaVivo()) {
-                    System.out.println("❌ " + javamon.getNome() + " já está consciente!");
-                    return false;
-                }
-                javamon.reviver();
-                System.out.println("✅ " + javamon.getNome() + " foi revivido!");
-                return true;
-                
-            default:
-                System.out.println("❌ Item desconhecido: " + item);
-                return false;
         }
     }
 
