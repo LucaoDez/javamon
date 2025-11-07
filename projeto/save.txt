@@ -3,6 +3,8 @@ Nome=Treinador
 Dinheiro=30
 PosX=55
 PosY=1
-Equipe=1
+Equipe=2
+Selvagem,1
 Ignis,1
-Itens=0
+Itens=1
+Poção,1
