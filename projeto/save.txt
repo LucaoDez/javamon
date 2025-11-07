@@ -1,8 +1,10 @@
 === SAVE JAVAMON ===
 Nome=Treinador
 Dinheiro=100
-PosX=31
-PosY=9
+VitoriasGym=0
+PosX=9
+PosY=1
 Equipe=1
-Ignis,1
+Feuermon|Ignis|1|0|70|70|25|15|20
+Box=0
 Itens=0
