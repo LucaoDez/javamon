@@ -66,8 +66,23 @@ public class SaveManager {
             writer.println("Itens=" + (bolsa == null ? 0 : bolsa.size()));
             if (bolsa != null) {
                 for (Itens i : bolsa) {
-                    // Formato: TipoItem|Quantidade
-                    writer.println(safe(i.getClass().getSimpleName()) + "|" + i.getQuantidade());
+                    String tipo = i.getClass().getSimpleName();
+                    
+                    // Para Pocao, salva também o valor de cura
+                    if (i instanceof Pocao) {
+                        // tenta pegar o valor de cura via reflexão
+                        try {
+                            java.lang.reflect.Field curaField = Pocao.class.getDeclaredField("cura");
+                            curaField.setAccessible(true);
+                            int cura = curaField.getInt(i);
+                            writer.println(tipo + "|" + i.getQuantidade() + "|" + cura);
+                        } catch (Exception e) {
+                            // fallback: salva sem cura
+                            writer.println(tipo + "|" + i.getQuantidade());
+                        }
+                    } else {
+                        writer.println(tipo + "|" + i.getQuantidade());
+                    }
                 }
             }
 
@@ -149,15 +164,25 @@ public class SaveManager {
             for (int i = 0; i < qtdItens; i++) {
                 line = reader.readLine();
                 if (line == null) break;
-                String[] dados = line.split("\\|", 2);
+                String[] dados = line.split("\\|");
                 if (dados.length < 2) continue;
                 
                 String tipoItem = dados[0].trim();
                 int quantidade = parseIntSafe(dados[1].trim(), 1);
+                
+                // Para Pocao, pode ter um terceiro parâmetro (cura)
+                int cura = 50; // valor padrão
+                if (dados.length >= 3) {
+                    cura = parseIntSafe(dados[2].trim(), 50);
+                }
 
-                Itens item = criarItem(tipoItem, quantidade);
-                if (item != null && jogador.getBolsa() != null) {
-                    jogador.getBolsa().add(item);
+                try {
+                    Itens item = criarItem(tipoItem, quantidade, cura);
+                    if (item != null && jogador.getBolsa() != null) {
+                        jogador.getBolsa().add(item);
+                    }
+                } catch (Exception e) {
+                    System.out.println("⚠️ Não foi possível carregar item: " + tipoItem);
                 }
             }
 
@@ -260,17 +285,27 @@ public class SaveManager {
     }
 
     // Fábrica de Itens por nome de classe
-    private static Itens criarItem(String tipoItem, int quantidade) {
-        switch (tipoItem) {
-            case "Pocao":
-                return new Pocao(quantidade);
-            case "Revive":
-                return new Revive(quantidade);
-            case "Javacube":
-                return new Javacube(quantidade);
-            default:
-                System.out.println("⚠️ Tipo de item desconhecido: " + tipoItem);
-                return null;
+    private static Itens criarItem(String tipoItem, int quantidade, int cura) {
+        try {
+            switch (tipoItem) {
+                case "Pocao":
+                    return new Pocao(quantidade, cura);
+                case "Revive":
+                    return new Revive(quantidade);
+                case "Javacube":
+                    return new Javacube(quantidade);
+                default:
+                    System.out.println("⚠️ Tipo de item desconhecido: " + tipoItem);
+                    return new Itens(tipoItem, "Item carregado do save", quantidade) {
+                        @Override
+                        public void usar(Javamon alvo) {
+                            System.out.println("Este item não tem efeito.");
+                        }
+                    };
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao criar item " + tipoItem + ": " + e.getMessage());
+            return null;
         }
     }
 }

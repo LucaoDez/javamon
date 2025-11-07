@@ -231,6 +231,7 @@ public abstract class Javamon{
     public int getNivel() { return lvl; }
     public List<Ataque> getAtaques() { return ataques; }
     public int getLvl() { return lvl; }
+    public int getExp() { return exp; }
 
     public void setHpATUAL(int hpATUAL) { this.hpATUAL = hpATUAL; }
     public void setLvl(int lvl) { this.lvl = lvl; }
