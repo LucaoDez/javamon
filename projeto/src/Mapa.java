@@ -37,7 +37,7 @@ public class Mapa {
                 grid[y][x] = (x < linha.length()) ? linha.charAt(x) : ' ';
             }
         }
-
+    
         jogadorX = 2;
         jogadorY = 2;
     }
@@ -157,8 +157,22 @@ public class Mapa {
         }
     }
 
+    public void inicializar(Jogador jogador) {
+        // se save carregou posição, setPosicaoJogador já foi chamado; senão usa spawn padrão
+        if (jogadorX == 0 && jogadorY == 0) {
+            jogadorX = 2;
+            jogadorY = 2;
+        }
+        // não chama mostrarMapa aqui — deixe o loop principal fazer isso
+    }
+
+    /**
+     * Entra no mapa posicionando o jogador ao lado esquerdo da entrada 'L'.
+     * Usado quando o jogador SAI da Liga e retorna para a cidade.
+     */
     public void entrar(Jogador jogador) {
         int lx = -1, ly = -1;
+        // encontra 'L' no grid
         for (int y = 0; y < grid.length && lx == -1; y++) {
             for (int x = 0; x < grid[y].length; x++) {
                 if (grid[y][x] == 'L') { lx = x; ly = y; break; }
@@ -171,6 +185,7 @@ public class Mapa {
                 jogadorX = leftX;
                 jogadorY = ly;
             } else {
+                // fallback: tenta outras adjacentes
                 int[][] candidatos = { {lx + 1, ly}, {lx, ly - 1}, {lx, ly + 1} };
                 boolean colocado = false;
                 for (int[] c : candidatos) {
@@ -192,8 +207,7 @@ public class Mapa {
             jogadorY = 2;
         }
 
-        mostrarMapa();
-        System.out.println("Você apareceu próximo à entrada da Liga.");
+        System.out.println("↩️ Você apareceu próximo à entrada da Liga.");
     }
 
     public boolean entrouNaLiga() { return entrouNaLiga; }

@@ -12,7 +12,6 @@ public class App {
 
         // mapa atual começa na cidade
         Object mapaAtual = mapaCidade;
-        mapaCidade.entrar(jogador);
 
         Menu menu = new Menu(jogador);
 
@@ -50,20 +49,13 @@ public class App {
                         mapaAtual = new MapaLiga(jogador);
                         continue;
                     }
-                } else if (mapaAtual instanceof MapaLiga) {
+                }  else if (mapaAtual instanceof MapaLiga) {
                     MapaLiga ml = (MapaLiga) mapaAtual;
-                    Object novoMapa = ml.mover(comando);
-                    
-                    // Se retornou um novo mapa (ginásio), troca
-                    if (novoMapa != null) {
-                        mapaAtual = novoMapa;
-                        continue;
-                    }
-                    
-                    // Se saiu da liga, volta para o mapa cidade
+                    ml.mover(comando);
                     if (ml.saiuDaLiga()) {
+                        ml.resetSair();
                         mapaAtual = mapaCidade;
-                        mapaCidade.resetEntrouNaLiga();
+                        mapaCidade.entrar(jogador);  // spawn junto ao 'L' ao sair da Liga
                         continue;
                     }
                 } else if (mapaAtual instanceof MapaGinasioFogo) {
