@@ -23,6 +23,11 @@ public class MapaGinasioAr {
         System.out.println("⚠️ Correntes de vento podem te mover!");
     }
 
+    public void entrar() {
+        System.out.println("\n🌪️ Você entrou no Ginásio do Ar!");
+        mostrar();
+    }
+
     public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {

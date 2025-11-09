@@ -21,6 +21,12 @@ public class MapaGinasioFogo {
         System.out.println("🔥 O calor é insuportável... avance com cuidado!");
     }
 
+    public void entrar() {
+        System.out.println("\n🔥 Você entrou no Ginásio do Fogo!");
+        // mostra o mapa do ginásio imediatamente
+        mostrar();
+    }
+
     public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {
@@ -68,6 +74,8 @@ public class MapaGinasioFogo {
     private boolean dentro(int nx, int ny) {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
+
+
 
     private void iniciarBatalha() {
         System.out.println("\n🔥 Pyros: Prepare-se para queimar!");

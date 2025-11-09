@@ -39,23 +39,56 @@ public class App {
             char comando = entrada.charAt(0);
 
             // --- movimentação consolidada ---
+            // ...existing code...
             if ("wasd".indexOf(comando) >= 0) {
                 if (mapaAtual instanceof Mapa) {
                     Mapa m = (Mapa) mapaAtual;
                     m.mover(comando, jogador);
 
-                    // detectar entrada na Liga e trocar o mapa
                     if (m.entrouNaLiga()) {
                         mapaAtual = new MapaLiga(jogador);
+                        m.resetEntrouNaLiga();
                         continue;
                     }
-                }  else if (mapaAtual instanceof MapaLiga) {
+                } else if (mapaAtual instanceof MapaLiga) {
                     MapaLiga ml = (MapaLiga) mapaAtual;
                     ml.mover(comando);
+                    
+                    // Detectar entrada em ginásio
+                    String ginasio = ml.getGinasioEntrado();
+                    if (ginasio != null) {
+                        ml.resetGinasio();
+                        
+                        switch (ginasio) {
+                            case "FOGO":
+                                mapaAtual = new MapaGinasioFogo(jogador);
+                                ((MapaGinasioFogo) mapaAtual).entrar();
+                                break;
+                            case "AGUA":
+                                mapaAtual = new MapaGinasioAgua(jogador);
+                                ((MapaGinasioAgua) mapaAtual).entrar();
+                                break;
+                            case "TERRA":
+                                mapaAtual = new MapaGinasioTerra(jogador);
+                                ((MapaGinasioTerra) mapaAtual).entrar();
+                                break;
+                            case "AR":
+                               mapaAtual = new MapaGinasioAr(jogador);
+                                ((MapaGinasioAr) mapaAtual).entrar();
+                                break;
+                            case "CAMPEAO":
+                                mapaAtual = new MapaCampeao(jogador);
+                                ((MapaCampeao) mapaAtual).entrar();
+                                break;
+                        }
+                        continue;
+                    }
+                    
+                    // Detectar saída da liga
                     if (ml.saiuDaLiga()) {
                         ml.resetSair();
                         mapaAtual = mapaCidade;
-                        mapaCidade.entrar(jogador);  // spawn junto ao 'L' ao sair da Liga
+                        mapaCidade.entrar(jogador);
                         continue;
                     }
                 } else if (mapaAtual instanceof MapaGinasioFogo) {

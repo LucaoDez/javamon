@@ -22,6 +22,11 @@ public class MapaGinasioAgua {
         System.out.println("💧 A umidade no ar é intensa... mova-se com cuidado!");
     }
 
+    public void entrar() {
+        System.out.println("\n🌊 Você entrou no Ginásio da Água!");
+        mostrar();
+    }
+
     public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {

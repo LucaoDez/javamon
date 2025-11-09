@@ -20,6 +20,11 @@ public class MapaGinasioTerra {
         System.out.println("⚠️ Rochas bloqueiam e o chão pode desmoronar!");
     }
 
+    public void entrar() {
+        System.out.println("\n🌱 Você entrou no Ginásio da Terra!");
+        mostrar();
+    }
+
     public void mostrar() {
         for (int i = 0; i < mapa.length; i++) {
             for (int j = 0; j < mapa[i].length; j++) {
