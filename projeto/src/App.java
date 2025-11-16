@@ -39,7 +39,6 @@ public class App {
             char comando = entrada.charAt(0);
 
             // --- movimentação consolidada ---
-            // ...existing code...
             if ("wasd".indexOf(comando) >= 0) {
                 if (mapaAtual instanceof Mapa) {
                     Mapa m = (Mapa) mapaAtual;
@@ -72,9 +71,8 @@ public class App {
                                 mapaAtual = new MapaGinasioTerra(jogador);
                                 ((MapaGinasioTerra) mapaAtual).entrar();
                                 break;
-                            case "AR":b
-                            
-                               mapaAtual = new MapaGinasioAr(jogador);
+                            case "AR":
+                                mapaAtual = new MapaGinasioAr(jogador);
                                 ((MapaGinasioAr) mapaAtual).entrar();
                                 break;
                             case "CAMPEAO":
@@ -139,7 +137,6 @@ public class App {
                 }
             } else if (comando == 'b') {
                 Batalha.lutar(jogador, new Feuermon("Selvagem", 70, 70, 25, 15, 20, 1, 0));
-                // O mapa será redesenhado no próximo loop
             } else if (!"wasd".contains(String.valueOf(comando))) {
                 System.out.println("Comando inválido.");
             }
