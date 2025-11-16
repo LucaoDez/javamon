@@ -72,7 +72,8 @@ public class App {
                                 mapaAtual = new MapaGinasioTerra(jogador);
                                 ((MapaGinasioTerra) mapaAtual).entrar();
                                 break;
-                            case "AR":
+                            case "AR":b
+                            
                                mapaAtual = new MapaGinasioAr(jogador);
                                 ((MapaGinasioAr) mapaAtual).entrar();
                                 break;

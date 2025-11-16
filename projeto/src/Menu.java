@@ -163,7 +163,6 @@ public class Menu {
             itemEscolhido.usar(alvo);
             
             // Remove quantidade
-            itemEscolhido.removerQuantidade(1);
             if (itemEscolhido.getQuantidade() <= 0) {
                 bolsa.remove(indiceItem);
                 System.out.println("❌ " + itemEscolhido.getNome() + " acabou!");

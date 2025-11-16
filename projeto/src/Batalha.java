@@ -2,10 +2,28 @@ import java.util.*;
 
 public class Batalha {
 
+    /**
+     * Inicia uma batalha padrão (contra Javamon selvagem - pode capturar)
+     */
     public static void lutar(Jogador jogador, Javamon inimigo) {
+        lutar(jogador, inimigo, false);
+    }
+
+    /**
+     * Inicia uma batalha com controle de captura
+     * @param jogador O jogador
+     * @param inimigo O Javamon inimigo
+     * @param ehBatalhaTreinador true = não pode capturar (líder/campeão), false = pode capturar (selvagem)
+     */
+    public static void lutar(Jogador jogador, Javamon inimigo, boolean ehBatalhaTreinador) {
         Scanner sc = new Scanner(System.in);
         
-        System.out.println("\n⚔️ Um " + inimigo.getNome() + " selvagem apareceu! (Nv." + inimigo.getLvl() + ")");
+        if (ehBatalhaTreinador) {
+            System.out.println("\n⚔️ Batalha contra treinador!");
+            System.out.println("🎯 " + inimigo.getNome() + " (Nv." + inimigo.getLvl() + ")");
+        } else {
+            System.out.println("\n⚔️ Um " + inimigo.getNome() + " selvagem apareceu! (Nv." + inimigo.getLvl() + ")");
+        }
         
         // Escolhe primeiro Javamon vivo da equipe
         Javamon aliado = null;
@@ -24,7 +42,13 @@ public class Batalha {
         while (aliado.estaVivo() && inimigo.estaVivo()) {
             System.out.println("\n🔥 " + aliado.getNome() + " HP:" + aliado.getHpATUAL() + "/" + aliado.getHpMAX());
             System.out.println("🐾 " + inimigo.getNome() + " HP:" + inimigo.getHpATUAL() + "/" + inimigo.getHpMAX());
-            System.out.println("\n[1] Atacar | [2] Trocar Javamon | [3] Usar Item | [4] Fugir");
+            
+            // Monta menu de opções baseado no tipo de batalha
+            if (ehBatalhaTreinador) {
+                System.out.println("\n[1] Atacar | [2] Trocar Javamon | [3] Usar Item (cura) | [4] Desistir");
+            } else {
+                System.out.println("\n[1] Atacar | [2] Trocar Javamon | [3] Usar Item | [4] Fugir");
+            }
             
             String entrada = sc.nextLine().trim();
             if (entrada.isEmpty()) continue;
@@ -80,15 +104,15 @@ public class Batalha {
                     System.out.println("\n🎉 VITÓRIA!");
                     System.out.println("✨ " + inimigo.getNome() + " foi derrotado!");
                     
-                    // Calcula recompensas baseadas no nível do inimigo
-                    int expGanha = 50 + (inimigo.getLvl() * 10);
-                    int dinheiroGanho = 30 + (inimigo.getLvl() * 15);
+                    // Recompensas (apenas em batalhas selvagens ou ajustar multiplicador para treinadores)
+                    int multiplicador = ehBatalhaTreinador ? 3 : 1;
+                    int expGanha = (50 + (inimigo.getLvl() * 10)) * multiplicador;
+                    int dinheiroGanho = (30 + (inimigo.getLvl() * 15)) * multiplicador;
                     
                     System.out.println("\n💰 Recompensas:");
                     System.out.println("   💵 Dinheiro: +" + dinheiroGanho);
                     jogador.ganharDinheiro(dinheiroGanho);
                     
-                    // Distribui EXP para todos os Javamon que participaram (apenas o ativo neste caso)
                     System.out.println("   ⭐ " + aliado.getNome() + " ganhou " + expGanha + " de EXP!");
                     
                     int nivelAntes = aliado.getLvl();
@@ -125,7 +149,11 @@ public class Batalha {
                             
                             if (novoAliado == null) {
                                 System.out.println("\n💀 Todos os seus Javamon foram derrotados!");
-                                System.out.println("🏥 Você foi levado ao Centro Javamon mais próximo...");
+                                if (ehBatalhaTreinador) {
+                                    System.out.println("😓 Você perdeu a batalha...");
+                                } else {
+                                    System.out.println("🏥 Você foi levado ao Centro Javamon mais próximo...");
+                                }
                                 return;
                             }
                             
@@ -185,8 +213,8 @@ public class Batalha {
                 }
                 
             } else if (escolha == 3) {
-                // Usar Item
-                int resultado = usarItemEmBatalha(jogador, inimigo, sc);
+                // Usar Item (com restrição de captura em batalhas contra treinadores)
+                int resultado = usarItemEmBatalha(jogador, inimigo, sc, ehBatalhaTreinador);
                 if (resultado == 1) {
                     System.out.println("\n🎉 Você capturou " + inimigo.getNome() + "!");
                     return; // Batalha termina com captura
@@ -202,9 +230,14 @@ public class Batalha {
                 }
                 
             } else if (escolha == 4) {
-                // Fugir
-                System.out.println("🏃 Você fugiu da batalha!");
-                return;
+                // Fugir / Desistir
+                if (ehBatalhaTreinador) {
+                    System.out.println("❌ Você não pode desistir de uma batalha contra treinador!");
+                    continue;
+                } else {
+                    System.out.println("🏃 Você fugiu da batalha!");
+                    return;
+                }
             } else {
                 System.out.println("❌ Opção inválida!");
             }
@@ -213,9 +246,10 @@ public class Batalha {
 
     /**
      * Sistema de uso de itens EM BATALHA
+     * @param ehBatalhaTreinador true = bloqueia uso de Javacube
      * @return 1 = capturou (encerra batalha), 0 = usou item normal, -1 = cancelou
      */
-    private static int usarItemEmBatalha(Jogador jogador, Javamon inimigo, Scanner sc) {
+    private static int usarItemEmBatalha(Jogador jogador, Javamon inimigo, Scanner sc, boolean ehBatalhaTreinador) {
         List<Itens> bolsa = jogador.getBolsa();
         if (bolsa == null || bolsa.isEmpty()) {
             System.out.println("❌ Sua bolsa está vazia!");
@@ -225,6 +259,12 @@ public class Batalha {
         System.out.println("\n🎒 Itens disponíveis:");
         for (int i = 0; i < bolsa.size(); i++) {
             Itens item = bolsa.get(i);
+            
+            // Se for batalha contra treinador, não mostra Javacube
+            if (ehBatalhaTreinador && item instanceof Javacube) {
+                continue;
+            }
+            
             System.out.printf("[%d] %s (x%d) - %s\n", 
                 i + 1, item.getNome(), item.getQuantidade(), item.getDescricao());
         }
@@ -248,8 +288,13 @@ public class Batalha {
 
         Itens itemEscolhido = bolsa.get(escolha - 1);
 
-        // Se for Javacube, tenta capturar
+        // Bloqueia uso de Javacube em batalhas contra treinadores
         if (itemEscolhido instanceof Javacube) {
+            if (ehBatalhaTreinador) {
+                System.out.println("❌ Você não pode capturar Javamon de outros treinadores!");
+                return -1;
+            }
+            
             Javacube cube = (Javacube) itemEscolhido;
             boolean capturou = cube.tentarCapturar(inimigo, jogador);
             return capturou ? 1 : 0;
