@@ -54,9 +54,28 @@ public class Jogador {
         }
     }
 
-    public void adicionarItem(Itens item){
+    public void adicionarItem(Itens item) {
         if (item == null) return;
-        bolsa.add(item);
+    
+        // Verifica se já existe um item do mesmo tipo na bolsa
+        boolean itemEncontrado = false;
+    
+        for (Itens itemExistente : bolsa) {
+            // Compara pelo nome do item
+            if (itemExistente.getNome().equals(item.getNome())) {
+                // Se encontrou, adiciona a quantidade ao item existente
+                itemExistente.adicionarQuantidade(item.getQuantidade());
+                itemEncontrado = true;
+                System.out.println("📦 " + item.getNome() + " empilhado! Total: " + itemExistente.getQuantidade());
+                break;
+            }
+        }
+    
+        // Se não encontrou, adiciona como novo item
+        if (!itemEncontrado) {
+            bolsa.add(item);
+            System.out.println("🆕 " + item.getNome() + " adicionado à bolsa!");
+        }
     }
 
     // Mostrar bolsa com índices

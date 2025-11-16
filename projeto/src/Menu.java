@@ -161,13 +161,13 @@ public class Menu {
         // Usa o item
         try {
             itemEscolhido.usar(alvo);
-            
-            itemEscolhido.removerQuantidade(1);
-            
-            // Remove quantidade
+    
+            // Verifica e remove se a quantidade chegou a 0 ou menos
             if (itemEscolhido.getQuantidade() <= 0) {
                 bolsa.remove(indiceItem);
-                System.out.println("❌ " + itemEscolhido.getNome() + " acabou!");
+                System.out.println("✅ " + itemEscolhido.getNome() + " foi usado e removido da bolsa!");
+            } else {
+                System.out.println("✅ Item usado! Restam: " + itemEscolhido.getQuantidade());
             }
         } catch (Exception e) {
             System.out.println("❌ Erro ao usar item: " + e.getMessage());
