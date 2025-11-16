@@ -13,10 +13,9 @@ public class Revive extends Itens {
         if (alvo.estaVivo()) {
             System.out.println(alvo.getNome() + " já está vivo!");
             return;
-        }
+        }   
 
         alvo.reviver();
-        removerQuantidade(1);
         System.out.println(alvo.getNome() + " foi revivido com metade do HP!");
     }
 }

@@ -19,7 +19,6 @@ public class Pocao extends Itens {
         }
 
         alvo.curar(cura);
-        removerQuantidade(1);
         System.out.println(alvo.getNome() + " recuperou " + cura + " de HP!");
     }
 }
