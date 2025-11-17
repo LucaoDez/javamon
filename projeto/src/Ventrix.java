@@ -1,6 +1,6 @@
 public class Ventrix extends Javamon{
     public Ventrix(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "ar", 70, 70, 25, 15, 20, 1, 0);
+        super(nome, "ar", 50, 50, 35, 10, 50, 1, 0);
         inicializarAtaques();
     }
 

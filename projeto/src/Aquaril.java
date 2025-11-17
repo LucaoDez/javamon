@@ -1,6 +1,6 @@
 public class Aquaril extends Javamon{
     public Aquaril(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "água", 70, 70, 25, 15, 20, 1, 0);
+        super(nome, "água", 70, 70, 30, 30, 30, 1, 0);
         inicializarAtaques();
     }
 

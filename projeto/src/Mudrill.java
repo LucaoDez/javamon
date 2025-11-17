@@ -1,6 +1,6 @@
 public class Mudrill extends Javamon{
     public Mudrill(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "terra", 70, 70, 25, 15, 20, 1, 0);
+        super(nome, "terra", 130, 130, 25, 60, 20, 1, 0);
         inicializarAtaques();
     }
 

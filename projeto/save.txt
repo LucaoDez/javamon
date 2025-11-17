@@ -1,10 +1,13 @@
 === SAVE JAVAMON ===
-Nome=lucas
-Dinheiro=370
+Nome=lucaodez
+Dinheiro=495
 VitoriasGym=1
-PosX=56
-PosY=2
-Equipe=1
-Aquaril|Splash|7|0|130|130|37|27|26
+GinasiosDerrotados=AGUA
+PosX=55
+PosY=1
+Equipe=2
+Feuermon|Ignis|3|0|0|120|44|24|12
+Mudrill|Selvagem Mudrill|4|0|160|160|31|66|23
 Box=0
-Itens=0
+Itens=1
+Javacube|1

@@ -16,6 +16,7 @@ public class MapaGinasioAr {
     private int x = 1, y = 8;
     private Jogador jogador;
     private boolean ventoAtivo = true;
+    private static final String NOME_GINASIO = "AR"; // Identificador único
 
     public MapaGinasioAr(Jogador jogador) {
         this.jogador = jogador;
@@ -67,6 +68,13 @@ public class MapaGinasioAr {
 
         // Líder Aeris
         if (destino == 'L') {
+            // VERIFICAÇÃO: Já derrotou este ginásio?
+            if (jogador.jaDerrotoGinasio(NOME_GINASIO)) {
+                System.out.println("🕊️ Aeris: Você já dominou os céus!");
+                System.out.println("💬 \"Os ventos sopram a seu favor, campeão!\"");
+                return false;
+            }
+            
             System.out.println("🕊️ Aeris: Só quem domina os céus pode vencer aqui!");
             iniciarBatalha();
             return false;
@@ -99,17 +107,15 @@ public class MapaGinasioAr {
             new Ventrix("Rayquaza", 120,120, 30, 20, 24,10, 0)
         };
 
-        for (Javamon inimigo : time) {
-            System.out.println("\n🕊️ Aeris enviou " + inimigo.getNome() + "!");
-            Batalha.lutar(jogador, inimigo);
-
-            if (inimigo.estaVivo()) {
-                System.out.println("\n💀 Você foi arremessado pelos ventos!");
-                return;
-            }
+        boolean venceu = Batalha.lutarContraTreinador(jogador, "Líder Aeris", time);
+    
+        if (venceu) {
+            System.out.println("\n🏆 Você conquistou a Insígnia dos Ventos!");
+            jogador.addVitoriaGym();
+            jogador.marcarGinasioDerrotado(NOME_GINASIO); // MARCA COMO DERROTADO
         }
-
-        System.out.println("\n🏆 Você conquistou a Insígnia dos Ventos!");
-        jogador.addVitoriaGym();
+        else {
+            System.out.println("\n💀 Você foi derrubado pelos ventos!");
+        }
     }
 }

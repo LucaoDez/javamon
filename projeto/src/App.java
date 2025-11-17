@@ -4,6 +4,7 @@ import java.util.Scanner;
  * Classe principal do jogo Javamon
  * Integra MenuInicial com o loop do jogo original
  * 
+ * 
  * @author Lucas Paraíso, Rafael Montenegro, Paulo Apolinario
  * @version Beta 1.0
  */
@@ -62,7 +63,7 @@ public class App {
                 ((MapaCampeao) mapaAtual).mostrar();
             }
 
-            System.out.println("\nUse W/A/S/D para mover | M para Menu | B para batalha de teste | Q para salvar e sair");
+            System.out.println("\nUse W/A/S/D para mover | M para Menu | Q para salvar e sair");
             String entrada = sc.nextLine().trim().toLowerCase();
             if (entrada.isEmpty()) continue;
             char comando = entrada.charAt(0);
@@ -165,8 +166,6 @@ public class App {
                 } else {
                     menu.abrirMenu(mapaCidade);
                 }
-            } else if (comando == 'b') {
-                Batalha.lutar(jogador, new Feuermon("Selvagem", 70, 70, 25, 15, 20, 1, 0));
                 // O mapa será redesenhado no próximo loop
             } else if (!"wasd".contains(String.valueOf(comando))) {
                 System.out.println("Comando inválido.");

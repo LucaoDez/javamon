@@ -14,6 +14,7 @@ public class MapaGinasioFogo {
 
     private int x = 7, y = 7;
     private Jogador jogador;
+    private static final String NOME_GINASIO = "FOGO"; // Identificador único
 
     public MapaGinasioFogo(Jogador jogador) {
         this.jogador = jogador;
@@ -23,7 +24,6 @@ public class MapaGinasioFogo {
 
     public void entrar() {
         System.out.println("\n🔥 Você entrou no Ginásio do Fogo!");
-        // mostra o mapa do ginásio imediatamente
         mostrar();
     }
 
@@ -55,15 +55,22 @@ public class MapaGinasioFogo {
 
         // Líder Pyros
         if (destino == 'L') {
+            // VERIFICAÇÃO: Já derrotou este ginásio?
+            if (jogador.jaDerrotoGinasio(NOME_GINASIO)) {
+                System.out.println("\n🔥 Pyros: Você já me derrotou! Continue sua jornada, campeão!");
+                System.out.println("💬 \"Não há necessidade de lutarmos novamente.\"");
+                return false;
+            }
+            
             System.out.println("\n🔥 Pyros: Mostre seu poder, treinador!");
             iniciarBatalha();
-            return false; // Continua no ginásio após batalha
+            return false;
         }
 
         // Saída
         if (destino == 'E') {
             System.out.println("\n↩️ Você deixou o Ginásio do Fogo");
-            return true; // Sai do ginásio
+            return true;
         }
 
         x = nx;
@@ -75,8 +82,6 @@ public class MapaGinasioFogo {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
 
-
-
     private void iniciarBatalha() {
         System.out.println("\n🔥 Pyros: Prepare-se para queimar!");
 
@@ -86,17 +91,14 @@ public class MapaGinasioFogo {
             new Feuermon("Arcanine",85, 85, 28, 18, 16, 9, 0)
         };
 
-        for (Javamon inimigo : time) {
-            System.out.println("\n🔥 Pyros enviou " + inimigo.getNome());
-            Batalha.lutar(jogador, inimigo);
-
-            if (inimigo.estaVivo()) {
-                System.out.println("\n💀 Você foi derrotado!");
-                return;
-            }
+        boolean venceu = Batalha.lutarContraTreinador(jogador, "Líder Pyros", time);
+    
+        if (venceu) {
+            System.out.println("\n🏆 Você conquistou a Insígnia do Fogo!");
+            jogador.addVitoriaGym();
+            jogador.marcarGinasioDerrotado(NOME_GINASIO); // MARCA COMO DERROTADO
+        } else {
+            System.out.println("\n💀 Treine mais e volte!");
         }
-
-        System.out.println("\n🏆 Você derrotou o Líder Pyros!");
-        jogador.addVitoriaGym();
     }
 }

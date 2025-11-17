@@ -23,6 +23,7 @@ public class MapaCampeao {
     private int x = 25, y = 15;
     private Jogador jogador;
     private final int spawnX = 25, spawnY = 15;
+    private static final String NOME_GINASIO = "CAMPEAO"; // Identificador único
 
     public MapaCampeao(Jogador jogador) {
         this.jogador = jogador;
@@ -41,7 +42,9 @@ public class MapaCampeao {
             String line = in.nextLine();
             if (line == null || line.trim().isEmpty()) continue;
             char comando = line.trim().toLowerCase().charAt(0);
-            mover(comando);
+            if (mover(comando)) {
+                break; // Saiu do mapa
+            }
         }
     }
 
@@ -56,79 +59,73 @@ public class MapaCampeao {
     }
 
     public boolean mover(char d) {
-    int nx = x, ny = y;
+        int nx = x, ny = y;
 
-    if (d == 'w') ny--;
-    else if (d == 's') ny++;
-    else if (d == 'a') nx--;
-    else if (d == 'd') nx++;
-    else return false;
+        if (d == 'w') ny--;
+        else if (d == 's') ny++;
+        else if (d == 'a') nx--;
+        else if (d == 'd') nx++;
+        else return false;
 
-    if (!dentro(nx, ny)) return false;
-    char destino = mapa[ny][nx];
+        if (!dentro(nx, ny)) return false;
+        char destino = mapa[ny][nx];
 
-    if (mapa[ny][nx] == '#') return false;
+        if (mapa[ny][nx] == '#') return false;
 
-    if (destino == 'O') {
-        System.out.println("🗿 As estátuas bloqueiam o caminho!");
+        if (destino == 'O') {
+            System.out.println("🗿 As estátuas bloqueiam o caminho!");
+            return false;
+        }
+
+        if (destino == 'C') {
+            // VERIFICAÇÃO: Já derrotou o campeão?
+            if (jogador.jaDerrotoGinasio(NOME_GINASIO)) {
+                System.out.println("\n👑 Campeão Eclipse: Parabéns, você é o novo campeão!");
+                System.out.println("💬 \"Não há necessidade de lutarmos novamente.\"");
+                System.out.println("💬 \"Continue defendendo seu título com honra!\"");
+                return false;
+            }
+            
+            System.out.println("\n👑 CAMPEÃO FINAL");
+            System.out.println("⚔️ Campeão Eclipse: \"Seu caminho termina aqui!\"");
+            enfrentarCampeao();
+            return false;
+        }
+
+        if (destino == 'E') {
+            System.out.println("➡️ Você voltou ao mapa da liga!");
+            return true; // Retorna true para sair do mapa
+        }
+
+        x = nx;
+        y = ny;
         return false;
     }
-
-    if (destino == 'C') {
-        System.out.println("\n👑 CAMPEÃO FINAL");
-        System.out.println("⚔️ Campeão Eclipse: \"Seu caminho termina aqui!\"");
-        enfrentarCampeao();
-        return false;
-    }
-
-    if (destino == 'E') {
-        System.out.println("➡️ Você voltou ao mapa da liga!");
-        return true; // ← AQUI! Retorna true para sair do mapa
-    }
-
-    x = nx;
-    y = ny;
-    return false;
-}
 
     private boolean dentro(int nx, int ny) {
         return ny >= 0 && ny < mapa.length && nx >= 0 && nx < mapa[ny].length;
     }
+
     private void enfrentarCampeao() {
-        // crie instâncias concretas (ajuste stats conforme suas classes)
         Javamon[] timeEclipse = {
-            new Feuermon("Titanflare", 320, 320, 140, 120, 100, 50, 0),
-            new Aquaril("AquaTempest", 340, 340, 125, 130, 90, 50, 0),
+            new Feuermon("Titanflare", 220, 220, 140, 120, 100, 50, 0),
+            new Aquaril("AquaTempest", 240, 240, 125, 130, 90, 50, 0),
             new Ventrix("StormValkyrie", 290, 290, 130, 105, 120, 50, 0),
-            new Terravox("TerraGolem", 380, 380, 120, 160, 60, 50, 0),
-            new Cindrax("ElectroRift", 300, 300, 135, 110, 95, 50, 0),
-            new Borealix("VoidSeraph", 310, 310, 150, 115, 85, 50, 0)
+            new Terravox("TerraGolem", 280, 280, 120, 160, 60, 50, 0),
+            new Cindrax("ElectroRift", 200, 200, 135, 110, 95, 50, 0),
+            new Borealix("VoidSeraph", 210, 210, 150, 115, 85, 50, 0)
         };
 
-        for (Javamon inimigo : timeEclipse) {
-            System.out.println("\nO Campeão enviou " + inimigo.getNome() + "!");
-            Batalha.lutar(jogador, inimigo);
-
-            // verifica se jogador ainda tem algum Javamon vivo
-            boolean jogadorTemVivo = false;
-            if (jogador != null && jogador.getEquipe() != null) {
-                for (Javamon j : jogador.getEquipe()) {
-                    if (j != null && j.estaVivo()) { jogadorTemVivo = true; break; }
-                }
-            }
-
-            if (!jogadorTemVivo) {
-                System.out.println("\n💀 Você foi derrotado pelo Campeão.");
-                // opcional: teleportar para spawn
-                x = spawnX;
-                y = spawnY;
-                return;
-            }
+        boolean venceu = Batalha.lutarContraTreinador(jogador, "Campeão Eclipse", timeEclipse);
+    
+        if (venceu) {
+            System.out.println("\n🎉 VOCÊ É O NOVO CAMPEÃO!");
+            System.out.println("🏅 Você entrou para o Hall da Fama!");
+            jogador.setSeTornouCampeao();
+        } else {
+            System.out.println("\n💀 Você foi derrotado pelo Campeão.");
+            x = spawnX;
+            y = spawnY;
         }
-
-        System.out.println("\n🎉 VOCÊ DERROTOU O CAMPEÃO ECLIPSE!");
-        System.out.println("🏅 Você é o CAMPEÃO SUPREMO!");
-        // registra vitória/seTornouCampeao no Jogador aqui se esse método existir
-        // ex: jogador.seTornouCampeao();
-    }
+    }   
 }

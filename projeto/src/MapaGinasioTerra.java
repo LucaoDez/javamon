@@ -13,6 +13,7 @@ public class MapaGinasioTerra {
 
     private int x = 1, y = 7;
     private Jogador jogador;
+    private static final String NOME_GINASIO = "TERRA"; // Identificador único
 
     public MapaGinasioTerra(Jogador jogador) {
         this.jogador = jogador;
@@ -66,6 +67,13 @@ public class MapaGinasioTerra {
 
         // Líder do ginásio
         if (destino == 'L') {
+            // VERIFICAÇÃO: Já derrotou este ginásio?
+            if (jogador.jaDerrotoGinasio(NOME_GINASIO)) {
+                System.out.println("\n⛰️ Líder Gaia: Sua força já foi provada!");
+                System.out.println("💬 \"A terra reconhece sua vitória. Siga em frente!\"");
+                return false;
+            }
+            
             System.out.println("⛰️ Líder Gaia: Mostre que sua força é inabalável!");
             iniciarBatalha();
             return false;
@@ -95,17 +103,14 @@ public class MapaGinasioTerra {
             new Terravox("Golemrock", 100, 100, 25, 18, 4, 9, 0)
         };
 
-        for (Javamon inimigo : timeTerra) {
-            System.out.println("⛰️ Gaia enviou " + inimigo.getNome() + "!");
-            Batalha.lutar(jogador, inimigo);
-
-            if (inimigo.estaVivo()) {
-                System.out.println("💀 Você foi esmagado pela força da Terra!");
-                return;
-            }
+        boolean venceu = Batalha.lutarContraTreinador(jogador, "Líder Gaia", timeTerra);
+    
+        if (venceu) {
+            System.out.println("\n🏆 Você conquistou a Insígnia da Terra!");
+            jogador.addVitoriaGym();
+            jogador.marcarGinasioDerrotado(NOME_GINASIO); // MARCA COMO DERROTADO
+        } else {
+            System.out.println("\n💀 Você foi soterrado pela força da terra!");
         }
-
-        System.out.println("🏆 Você derrotou a Líder Gaia do Ginásio Terra!");
-        jogador.addVitoriaGym();
     }
 }

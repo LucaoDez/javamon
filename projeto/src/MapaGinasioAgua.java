@@ -15,6 +15,7 @@ public class MapaGinasioAgua {
     private int x = 1, y = 7;
     private int spawnX = 1, spawnY = 7;
     private Jogador jogador;
+    private static final String NOME_GINASIO = "AGUA"; // Identificador único
 
     public MapaGinasioAgua(Jogador jogador) {
         this.jogador = jogador;
@@ -92,6 +93,13 @@ public class MapaGinasioAgua {
 
         // líder
         if (obst == 'L') {
+            // VERIFICAÇÃO: Já derrotou este ginásio?
+            if (jogador.jaDerrotoGinasio(NOME_GINASIO)) {
+                System.out.println("\n💦 AQUA: Você já provou seu valor contra as marés!");
+                System.out.println("💬 \"Continue sua jornada, campeão das águas!\"");
+                return false;
+            }
+            
             System.out.println("\n💦 AQUA: Prepare-se para enfrentar o poder das marés!");
             iniciarBatalha();
             return false;
@@ -121,17 +129,14 @@ public class MapaGinasioAgua {
             new Aquaril("Gyarados",  90, 90, 30, 20, 15, 9, 0)
         };
 
-        for (Javamon inimigo : time) {
-            System.out.println("\n🌊 AQUA enviou " + inimigo.getNome());
-            Batalha.lutar(jogador, inimigo);
-
-            if (inimigo.estaVivo()) {
-                System.out.println("\n💀 Você foi derrotado!");
-                return;
-            }
+        boolean venceu = Batalha.lutarContraTreinador(jogador, "Líder AQUA", time);
+    
+        if (venceu) {
+            System.out.println("\n🏆 Você conquistou a Insígnia da Água!");
+            jogador.addVitoriaGym();
+            jogador.marcarGinasioDerrotado(NOME_GINASIO); // MARCA COMO DERROTADO
+        } else {
+            System.out.println("\n💀 Você foi subjugado pelas forças da água!");
         }
-
-        System.out.println("\n🏆 Você derrotou o Líder AQUA!");
-        jogador.addVitoriaGym();
     }
 }

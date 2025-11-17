@@ -1,6 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Jogador {
     private final String nome;
@@ -12,6 +14,9 @@ public class Jogador {
     private List<Itens> bolsa;
     private int vitoriasGym = 0;
     private boolean seTornouCampeao = false;
+    
+    // NOVO: Controle de quais ginásios foram derrotados
+    private Set<String> ginasiosDerrotados;
 
     public Jogador(String nome) {
         this.nome = nome;
@@ -19,6 +24,7 @@ public class Jogador {
         this.equipe = new ArrayList<>();
         this.box = new ArrayList<>();
         this.bolsa = new ArrayList<>();
+        this.ginasiosDerrotados = new HashSet<>();
     }
 
     // getters
@@ -57,13 +63,10 @@ public class Jogador {
     public void adicionarItem(Itens item) {
         if (item == null) return;
     
-        // Verifica se já existe um item do mesmo tipo na bolsa
         boolean itemEncontrado = false;
     
         for (Itens itemExistente : bolsa) {
-            // Compara pelo nome do item
             if (itemExistente.getNome().equals(item.getNome())) {
-                // Se encontrou, adiciona a quantidade ao item existente
                 itemExistente.adicionarQuantidade(item.getQuantidade());
                 itemEncontrado = true;
                 System.out.println("📦 " + item.getNome() + " empilhado! Total: " + itemExistente.getQuantidade());
@@ -71,14 +74,12 @@ public class Jogador {
             }
         }
     
-        // Se não encontrou, adiciona como novo item
         if (!itemEncontrado) {
             bolsa.add(item);
             System.out.println("🆕 " + item.getNome() + " adicionado à bolsa!");
         }
     }
 
-    // Mostrar bolsa com índices
     public void mostrarBolsa() {
         if (bolsa.isEmpty()) {
             System.out.println("A bolsa de " + nome + " está vazia.");
@@ -91,7 +92,6 @@ public class Jogador {
         }
     }
 
-    // Mostrar equipe com índices
     public void mostrarEquipe() {
         System.out.println("\n=== EQUIPE ===");
         if (equipe.isEmpty()) {
@@ -104,7 +104,6 @@ public class Jogador {
         }
     }
 
-    // Mostrar box
     public void mostrarBox() {
         System.out.println("\n=== BOX ===");
         if (box.isEmpty()) {
@@ -117,7 +116,6 @@ public class Jogador {
         }
     }
 
-    // trocar javamon equipe <-> box
     public void trocarJavamon(int indiceEquipe, int indiceBox) {
         if (indiceEquipe < 0 || indiceEquipe >= equipe.size()) {
             System.out.println("Índice da equipe inválido.");
@@ -150,15 +148,44 @@ public class Jogador {
         }
     }
 
-    // vitórias / campeão
+    // ========== CONTROLE DE GINÁSIOS ==========
+    
     public int getVitoriasGym() { return vitoriasGym; }
+    
     public void addVitoriaGym() {
         vitoriasGym++;
         System.out.println("🏅 Vitória registrada! Total de ginásios vencidos: " + vitoriasGym);
     }
+    
+    // NOVO: Marca ginásio como derrotado
+    public void marcarGinasioDerrotado(String nomeGinasio) {
+        if (nomeGinasio == null) return;
+        ginasiosDerrotados.add(nomeGinasio.toUpperCase());
+    }
+    
+    // NOVO: Verifica se ginásio já foi derrotado
+    public boolean jaDerrotoGinasio(String nomeGinasio) {
+        if (nomeGinasio == null) return false;
+        return ginasiosDerrotados.contains(nomeGinasio.toUpperCase());
+    }
+    
+    // NOVO: Getter para o set (útil para save/load)
+    public Set<String> getGinasiosDerrotados() {
+        return ginasiosDerrotados;
+    }
+    
+    // NOVO: Setter para o set (útil para save/load)
+    public void setGinasiosDerrotados(Set<String> ginasios) {
+        this.ginasiosDerrotados = ginasios != null ? ginasios : new HashSet<>();
+    }
 
-    public void resetVitoriasGym() { vitoriasGym = 0; }
+    public void resetVitoriasGym() { 
+        vitoriasGym = 0; 
+        ginasiosDerrotados.clear();
+    }
+    
     public boolean getSeTornouCampeao() { return seTornouCampeao; }
+    
     public void setSeTornouCampeao() {
         seTornouCampeao = true;
         System.out.println("🏆 Você agora é o CAMPEÃO da Liga Javamon!!!");
@@ -187,7 +214,6 @@ public class Jogador {
         }
     }
 
-    // Usa item sem alvo (ex: buff no jogador)
     public void usarItem(int indiceBolsa) {
         if (indiceBolsa < 0 || indiceBolsa >= bolsa.size()) {
             System.out.println("Índice do item inválido.");
@@ -205,7 +231,6 @@ public class Jogador {
         }
     }
 
-    // Conveniência: usa por nome no primeiro javamon
     public boolean usarItemPorNomeNoPrimeiroJavamon(String nomeItem) {
         if (equipe.isEmpty()) {
             System.out.println("Nenhum Javamon na equipe para usar o item.");
@@ -222,7 +247,6 @@ public class Jogador {
         return false;
     }
 
-    // decrementa quantidade e remove item se necessário
     private void reduzirOuRemoverItem(int indiceBolsa, Itens item) {
         try {
             int qtd = item.getQuantidade();
@@ -236,14 +260,6 @@ public class Jogador {
         }
     }
 
-    /* ============================
-       MÉTODOS INTERATIVOS (console)
-       ============================ */
-
-    /**
-     * Cria Scanner(System.in) e chama a versão que usa Scanner.
-     * Não feche esse Scanner aqui (para não fechar System.in).
-     */
     public void usarItemInterativo() {
         usarItemInterativo(new Scanner(System.in));
     }
@@ -296,10 +312,6 @@ public class Jogador {
         }
     }
 
-    /**
-     * Helper para ler inteiro com limites. Continua pedindo até ser válido.
-     * Aceita min > max caso queira tratar valores especiais (mas normalmente min <= max).
-     */
     private int lerInt(Scanner sc, String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt + " ");

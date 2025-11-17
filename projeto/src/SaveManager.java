@@ -1,5 +1,7 @@
 import java.io.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SaveManager {
 
@@ -17,6 +19,14 @@ public class SaveManager {
             writer.println("Nome=" + safe(jogador.getNome()));
             writer.println("Dinheiro=" + jogador.getDinheiro());
             writer.println("VitoriasGym=" + jogador.getVitoriasGym());
+            
+            // NOVO: Salvar ginásios derrotados
+            Set<String> ginasios = jogador.getGinasiosDerrotados();
+            if (ginasios != null && !ginasios.isEmpty()) {
+                writer.println("GinasiosDerrotados=" + String.join(",", ginasios));
+            } else {
+                writer.println("GinasiosDerrotados=");
+            }
             
             // 2. POSIÇÃO NO MAPA
             writer.println("PosX=" + mapa.getJogadorX());
@@ -70,14 +80,12 @@ public class SaveManager {
                     
                     // Para Pocao, salva também o valor de cura
                     if (i instanceof Pocao) {
-                        // tenta pegar o valor de cura via reflexão
                         try {
                             java.lang.reflect.Field curaField = Pocao.class.getDeclaredField("cura");
                             curaField.setAccessible(true);
                             int cura = curaField.getInt(i);
                             writer.println(tipo + "|" + i.getQuantidade() + "|" + cura);
                         } catch (Exception e) {
-                            // fallback: salva sem cura
                             writer.println(tipo + "|" + i.getQuantidade());
                         }
                     } else {
@@ -114,18 +122,30 @@ public class SaveManager {
             int dinheiroSalvo = parseIntSafe(nextValue(reader.readLine()), 100);
             int vitoriasGym = parseIntSafe(nextValue(reader.readLine()), 0);
             
+            // NOVO: Carregar ginásios derrotados
+            String ginasiosLine = nextValue(reader.readLine());
+            Set<String> ginasiosDerrotados = new HashSet<>();
+            if (ginasiosLine != null && !ginasiosLine.trim().isEmpty()) {
+                String[] nomes = ginasiosLine.split(",");
+                for (String nomeGin : nomes) {
+                    if (nomeGin != null && !nomeGin.trim().isEmpty()) {
+                        ginasiosDerrotados.add(nomeGin.trim());
+                    }
+                }
+            }
+            
             // 2. POSIÇÃO NO MAPA
             int posX = parseIntSafe(nextValue(reader.readLine()), 2);
             int posY = parseIntSafe(nextValue(reader.readLine()), 2);
 
             Jogador jogador = new Jogador(nome);
 
-            // ajustar dinheiro
+            // Ajustar dinheiro
             int atual = jogador.getDinheiro();
             if (dinheiroSalvo > atual) jogador.ganharDinheiro(dinheiroSalvo - atual);
             else if (dinheiroSalvo < atual) jogador.gastarDinheiro(atual - dinheiroSalvo);
 
-            // ajustar vitórias de ginásio
+            // Ajustar vitórias de ginásio
             try {
                 java.lang.reflect.Field vField = jogador.getClass().getDeclaredField("vitoriasGym");
                 vField.setAccessible(true);
@@ -133,8 +153,11 @@ public class SaveManager {
             } catch (Exception e) {
                 System.out.println("⚠️ Não foi possível restaurar vitórias de ginásio.");
             }
+            
+            // NOVO: Restaurar ginásios derrotados
+            jogador.setGinasiosDerrotados(ginasiosDerrotados);
 
-            // posiciona jogador no mapa
+            // Posiciona jogador no mapa
             if (mapa != null) mapa.setPosicaoJogador(posX, posY);
 
             // 3. LER EQUIPE
@@ -170,8 +193,7 @@ public class SaveManager {
                 String tipoItem = dados[0].trim();
                 int quantidade = parseIntSafe(dados[1].trim(), 1);
                 
-                // Para Pocao, pode ter um terceiro parâmetro (cura)
-                int cura = 50; // valor padrão
+                int cura = 50;
                 if (dados.length >= 3) {
                     cura = parseIntSafe(dados[2].trim(), 50);
                 }
@@ -187,7 +209,10 @@ public class SaveManager {
             }
 
             System.out.println("✅ Jogo carregado com sucesso!");
-            System.out.println("📊 Equipe: " + jogador.getEquipe().size() + " | Box: " + (jogador.getBox() == null ? 0 : jogador.getBox().size()) + " | Dinheiro: " + jogador.getDinheiro());
+            System.out.println("📊 Equipe: " + jogador.getEquipe().size() + 
+                             " | Box: " + (jogador.getBox() == null ? 0 : jogador.getBox().size()) + 
+                             " | Dinheiro: " + jogador.getDinheiro());
+            System.out.println("🏅 Ginásios derrotados: " + ginasiosDerrotados.size() + "/5");
             return jogador;
 
         } catch (IOException e) {
@@ -217,7 +242,6 @@ public class SaveManager {
         return s == null ? "" : s.replace("\n", "").replace("\r", "").replace("|", "");
     }
 
-    // Parseia linha do formato: Especie|Nome|Nivel|Exp|HpAtual|HpMax|Atk|Def|Spd
     private static Javamon parsearJavamon(String line) {
         if (line == null || line.trim().isEmpty()) return null;
         
@@ -247,7 +271,6 @@ public class SaveManager {
         }
     }
 
-    // Fábrica de Javamon por nome de classe
     private static Javamon criarJavamonPorEspecie(String especie, String nome, int hpMax, int hpAtual, int atk, int def, int spd, int nivel, int exp) {
         Javamon j = null;
         
@@ -284,7 +307,6 @@ public class SaveManager {
         return j;
     }
 
-    // Fábrica de Itens por nome de classe
     private static Itens criarItem(String tipoItem, int quantidade, int cura) {
         try {
             switch (tipoItem) {

@@ -1,6 +1,6 @@
 public class Borealix extends Javamon{
     public Borealix(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "ar", 80, 80, 20, 25, 15, 1, 0);
+        super(nome, "ar", 60, 60, 20, 25, 75, 1, 0);
         inicializarAtaques();
     }
 

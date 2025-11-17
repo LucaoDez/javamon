@@ -1,6 +1,6 @@
 public class Terravox extends Javamon{
     public Terravox(String nome, int hpMAX, int hpATUAL, int atk, int def, int spd, int lvl, int exp) {
-        super(nome, "terra", 70, 70, 25, 15, 20, 1, 0);
+        super(nome, "terra", 120, 120, 15, 50, 5, 1, 0);
         inicializarAtaques();
     }
 
