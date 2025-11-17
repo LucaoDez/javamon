@@ -108,12 +108,12 @@ public class MapaCampeao {
 
     private void enfrentarCampeao() {
         Javamon[] timeEclipse = {
-            new Feuermon("Titanflare", 220, 220, 140, 120, 100, 50, 0),
-            new Aquaril("AquaTempest", 240, 240, 125, 130, 90, 50, 0),
-            new Ventrix("StormValkyrie", 290, 290, 130, 105, 120, 50, 0),
-            new Terravox("TerraGolem", 280, 280, 120, 160, 60, 50, 0),
-            new Cindrax("ElectroRift", 200, 200, 135, 110, 95, 50, 0),
-            new Borealix("VoidSeraph", 210, 210, 150, 115, 85, 50, 0)
+            new Feuermon("Titanflare", 110, 1, 70, 60, 5, 10, 0),
+            new Aquaril("AquaTempest", 120, 1, 75, 70, 4, 10, 0),
+            new Ventrix("StormValkyrie", 150, 1, 70, 65, 6, 10, 0),
+            new Terravox("TerraGolem", 140, 1, 60, 60, 6, 10, 0),
+            new Cindrax("ElectroRift", 150, 1, 75, 55, 5, 10, 0),
+            new Borealix("VoidSeraph", 110, 1, 70, 65, 5, 10, 0)
         };
 
         boolean venceu = Batalha.lutarContraTreinador(jogador, "Campeão Eclipse", timeEclipse);
@@ -122,6 +122,22 @@ public class MapaCampeao {
             System.out.println("\n🎉 VOCÊ É O NOVO CAMPEÃO!");
             System.out.println("🏅 Você entrou para o Hall da Fama!");
             jogador.setSeTornouCampeao();
+            // ========== VITÓRIA! ==========
+            System.out.println("\n🎉 VOCÊ DERROTOU O CAMPEÃO ECLIPSE!");
+            System.out.println("🏅 Você é o CAMPEÃO SUPREMO!");
+    
+            // Marca o jogador como campeão
+            jogador.setSeTornouCampeao();
+    
+            // Aguarda antes da tela final
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+            // Ignora
+            }
+    
+            // ========== EXIBE TELA FINAL ==========
+            TelaFinal.exibir(jogador);
         } else {
             System.out.println("\n💀 Você foi derrotado pelo Campeão.");
             x = spawnX;

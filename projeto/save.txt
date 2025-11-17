@@ -6,8 +6,8 @@ GinasiosDerrotados=AGUA
 PosX=55
 PosY=1
 Equipe=2
-Feuermon|Ignis|3|0|0|120|44|24|12
-Mudrill|Selvagem Mudrill|4|0|160|160|31|66|23
+Feuermon|Ignis|1|0|100|100|40|20|10
+Mudrill|Selvagem Mudrill|1|0|130|130|25|60|20
 Box=0
 Itens=1
 Javacube|1
