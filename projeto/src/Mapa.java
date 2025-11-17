@@ -163,7 +163,6 @@ public class Mapa {
             jogadorX = 2;
             jogadorY = 2;
         }
-        // não chama mostrarMapa aqui — deixe o loop principal fazer isso
     }
 
     /**
@@ -213,6 +212,4 @@ public class Mapa {
     public boolean entrouNaLiga() { return entrouNaLiga; }
     public MapaLiga getMapaLigaInstancia() { return mapaLigaInstancia; }
     public void resetEntrouNaLiga() { entrouNaLiga = false; mapaLigaInstancia = null; }
-    // ...existing code...
 }
-// ...existing code...
