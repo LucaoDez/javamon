@@ -1,18 +1,47 @@
 import java.util.Scanner;
 
+/**
+ * Classe principal do jogo Javamon
+ * Integra MenuInicial com o loop do jogo original
+ * 
+ * @author Lucas Paraíso, Rafael Montenegro, Paulo Apolinario
+ * @version Beta 1.0
+ */
 public class App {
     public static void main(String[] args) {
+        // ========== EXIBE MENU INICIAL E OBTÉM DADOS DO JOGADOR ==========
+        Object[] dadosJogador = MenuInicial.exibirMenu();
+        
+        if (dadosJogador == null) {
+            System.out.println("Saindo do jogo...");
+            return;
+        }
+        
+        String nomeJogador = (String) dadosJogador[0];
+        Javamon starter = (Javamon) dadosJogador[1];
+        
+        // ========== INICIALIZA O JOGO ==========
         Scanner sc = new Scanner(System.in);
         Mapa mapaCidade = new Mapa();
-        Jogador jogador = SaveManager.carregar("save.txt", mapaCidade);
-        if (jogador == null){ 
-            jogador = new Jogador("Treinador");
-            jogador.adicionarJavamon(new Feuermon("Ignis", 100, 100, 30, 20, 25, 5, 0));
+        Jogador jogador;
+        
+        if (nomeJogador != null && starter != null) {
+            // Novo jogo com starter escolhido
+            jogador = new Jogador(nomeJogador);
+            jogador.adicionarJavamon(starter);
+        } else {
+            // Carregar jogo do save
+            jogador = SaveManager.carregar("save.txt", mapaCidade);
+            if (jogador == null) {
+                // Se falhar ao carregar, cria jogador padrão
+                jogador = new Jogador("Treinador");
+                jogador.adicionarJavamon(new Feuermon("Ignis", 100, 100, 30, 20, 25, 5, 0));
+            }
         }
 
-        // mapa atual começa na cidade
+        // ========== LOOP PRINCIPAL DO JOGO ==========
+        // Mapa atual começa na cidade
         Object mapaAtual = mapaCidade;
-
         Menu menu = new Menu(jogador);
 
         while (true) {
@@ -38,12 +67,13 @@ public class App {
             if (entrada.isEmpty()) continue;
             char comando = entrada.charAt(0);
 
-            // --- movimentação consolidada ---
+            // ========== MOVIMENTAÇÃO CONSOLIDADA ==========
             if ("wasd".indexOf(comando) >= 0) {
                 if (mapaAtual instanceof Mapa) {
                     Mapa m = (Mapa) mapaAtual;
                     m.mover(comando, jogador);
 
+                    // Detectar entrada na Liga e trocar o mapa
                     if (m.entrouNaLiga()) {
                         mapaAtual = new MapaLiga(jogador);
                         m.resetEntrouNaLiga();
@@ -124,10 +154,10 @@ public class App {
                 }
             }
 
-            // comandos não relacionados a movimento
+            // ========== COMANDOS NÃO RELACIONADOS A MOVIMENTO ==========
             if (comando == 'q') {
                 SaveManager.salvar(jogador, mapaCidade, "save.txt");
-                System.out.println("Jogo salvo. Saindo...");
+                System.out.println("💾 Jogo salvo. Saindo...");
                 break;
             } else if (comando == 'm') {
                 if (mapaAtual instanceof Mapa) {
@@ -137,9 +167,12 @@ public class App {
                 }
             } else if (comando == 'b') {
                 Batalha.lutar(jogador, new Feuermon("Selvagem", 70, 70, 25, 15, 20, 1, 0));
+                // O mapa será redesenhado no próximo loop
             } else if (!"wasd".contains(String.valueOf(comando))) {
                 System.out.println("Comando inválido.");
             }
         }
+        
+        sc.close();
     }
 }
