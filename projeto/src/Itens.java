@@ -1,4 +1,3 @@
-// Itens.java
 public class Itens {
     private final String nome;
     private final String descricao;

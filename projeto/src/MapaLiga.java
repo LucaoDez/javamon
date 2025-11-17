@@ -47,31 +47,31 @@ public class MapaLiga {
 
         char destino = mapa[ny][nx];
 
-        // 🌋 Ginásio do Fogo
+        // Ginásio do Fogo
         if (destino == 'F') {
             ginasioEntrado = "FOGO";
             return;
         }
 
-        // 🌊 Ginásio da Água
+        // Ginásio da Água
         if (destino == 'A') {
             ginasioEntrado = "AGUA";
             return;
         }
 
-        // 🌱 Ginásio da Terra
+        // Ginásio da Terra
         if (destino == 'T') {
             ginasioEntrado = "TERRA";
             return;
         }
 
-        // 🌪️ Ginásio do Ar
+        // Ginásio do Ar
         if (destino == 'R') {
             ginasioEntrado = "AR";
             return;
         }
 
-        // 🏆 Campeão
+        // Campeão
         if (destino == 'C') {
             if (jogador != null && jogador.getVitoriasGym() == 4) {
                 ginasioEntrado = "CAMPEAO";
@@ -81,7 +81,7 @@ public class MapaLiga {
             return;
         }
 
-        // 🚪 SAÍDA do Hall
+        // SAÍDA do Hall
         if (destino == 'S') {
             System.out.println("\n↩️ Você saiu do Hall!");
             saiu = true;

@@ -40,8 +40,8 @@ public class Batalha {
         }
         
         while (aliado.estaVivo() && inimigo.estaVivo()) {
-            System.out.println("\n🔥 " + aliado.getNome() + " HP:" + aliado.getHpATUAL() + "/" + aliado.getHpMAX());
-            System.out.println("🐾 " + inimigo.getNome() + " HP:" + inimigo.getHpATUAL() + "/" + inimigo.getHpMAX());
+            System.out.println("\n🔥 " + aliado.getNome() + " HP:" + aliado.getHpATUAL() + "/" + aliado.getHpMAX() + " | SPD:" + aliado.getSpd());
+            System.out.println("🐾 " + inimigo.getNome() + " HP:" + inimigo.getHpATUAL() + "/" + inimigo.getHpMAX() + " | SPD:" + inimigo.getSpd());
             
             // Monta menu de opções baseado no tipo de batalha
             if (ehBatalhaTreinador) {
@@ -62,7 +62,7 @@ public class Batalha {
             }
             
             if (escolha == 1) {
-                // Atacar
+                // ========== ATACAR COM SISTEMA DE VELOCIDADE ==========
                 List<Ataque> ataques = aliado.getAtaques();
                 if (ataques == null || ataques.isEmpty()) {
                     System.out.println("❌ " + aliado.getNome() + " não possui ataques!");
@@ -96,137 +96,71 @@ public class Batalha {
                     continue;
                 }
                 
-                // Aliado ataca
-                aliado.atacar(inimigo, indiceAtaque);
+                // ========== DETERMINA QUEM ATACA PRIMEIRO ==========
+                boolean aliadoAtacaPrimeiro = determinarOrdemAtaque(aliado, inimigo);
                 
-                // Verifica se inimigo foi derrotado
-                if (!inimigo.estaVivo()) {
-                    System.out.println("\n🎉 VITÓRIA!");
-                    System.out.println("✨ " + inimigo.getNome() + " foi derrotado!");
+                if (aliadoAtacaPrimeiro) {
+                    System.out.println("\n⚡ " + aliado.getNome() + " é mais rápido!");
                     
-                    // Recompensas (apenas em batalhas selvagens ou ajustar multiplicador para treinadores)
-                    int multiplicador = ehBatalhaTreinador ? 3 : 1;
-                    int expGanha = (50 + (inimigo.getLvl() * 10)) * multiplicador;
-                    int dinheiroGanho = (30 + (inimigo.getLvl() * 15)) * multiplicador;
+                    // Aliado ataca primeiro
+                    aliado.atacar(inimigo, indiceAtaque);
                     
-                    System.out.println("\n💰 Recompensas:");
-                    System.out.println("   💵 Dinheiro: +" + dinheiroGanho);
-                    jogador.ganharDinheiro(dinheiroGanho);
-                    
-                    System.out.println("   ⭐ " + aliado.getNome() + " ganhou " + expGanha + " de EXP!");
-                    
-                    int nivelAntes = aliado.getLvl();
-                    aliado.ganharExperiencia(expGanha);
-                    int nivelDepois = aliado.getLvl();
-                    
-                    if (nivelDepois > nivelAntes) {
-                        System.out.println("   🎊 " + aliado.getNome() + " subiu para o nível " + nivelDepois + "!");
+                    // Verifica se inimigo foi derrotado
+                    if (!inimigo.estaVivo()) {
+                        processarVitoria(jogador, aliado, inimigo, ehBatalhaTreinador);
+                        return;
                     }
                     
-                    System.out.println("\n💼 Dinheiro total: " + jogador.getDinheiro());
-                    return;
-                }
-                
-                // Inimigo ataca (se ainda estiver vivo)
-                if (inimigo.estaVivo()) {
-                    List<Ataque> ataquesInimigo = inimigo.getAtaques();
-                    if (ataquesInimigo != null && !ataquesInimigo.isEmpty()) {
-                        Random rand = new Random();
-                        int indiceAleatorio = rand.nextInt(ataquesInimigo.size());
-                        inimigo.atacar(aliado, indiceAleatorio);
-                        
-                        if (!aliado.estaVivo()) {
-                            System.out.println("\n💀 " + aliado.getNome() + " foi nocauteado!");
-                            
-                            // Tenta trocar para outro Javamon vivo
-                            Javamon novoAliado = null;
-                            for (Javamon j : jogador.getEquipe()) {
-                                if (j.estaVivo() && j != aliado) {
-                                    novoAliado = j;
-                                    break;
-                                }
-                            }
-                            
-                            if (novoAliado == null) {
-                                System.out.println("\n💀 Todos os seus Javamon foram derrotados!");
-                                if (ehBatalhaTreinador) {
-                                    System.out.println("😓 Você perdeu a batalha...");
-                                } else {
-                                    System.out.println("🏥 Você foi levado ao Centro Javamon mais próximo...");
-                                }
-                                return;
-                            }
-                            
-                            aliado = novoAliado;
-                            System.out.println("🔄 " + aliado.getNome() + " entrou em campo!");
-                        }
+                    // Inimigo ataca (se ainda estiver vivo)
+                    executarAtaqueInimigo(inimigo, aliado, jogador);
+                    
+                } else {
+                    System.out.println("\n⚡ " + inimigo.getNome() + " é mais rápido!");
+                    
+                    // Inimigo ataca primeiro
+                    executarAtaqueInimigo(inimigo, aliado, jogador);
+                    
+                    // Verifica se aliado foi nocauteado
+                    if (!aliado.estaVivo()) {
+                        aliado = trocarJavamonAposNocaute(jogador, aliado);
+                        if (aliado == null) return;
+                        continue;
+                    }
+                    
+                    // Aliado ataca depois
+                    aliado.atacar(inimigo, indiceAtaque);
+                    
+                    // Verifica se inimigo foi derrotado
+                    if (!inimigo.estaVivo()) {
+                        processarVitoria(jogador, aliado, inimigo, ehBatalhaTreinador);
+                        return;
                     }
                 }
                 
             } else if (escolha == 2) {
-                // Trocar Javamon
-                System.out.println("\n🔄 Escolha um Javamon:");
-                List<Javamon> equipe = jogador.getEquipe();
-                for (int i = 0; i < equipe.size(); i++) {
-                    Javamon j = equipe.get(i);
-                    String status = j.estaVivo() ? "✅" : "💀";
-                    System.out.printf("[%d] %s %s (HP: %d/%d, Nv.%d)\n", 
-                        i + 1, status, j.getNome(), j.getHpATUAL(), j.getHpMAX(), j.getLvl());
-                }
-                
-                entrada = sc.nextLine().trim();
-                int indiceJavamon = -1;
-                try {
-                    indiceJavamon = Integer.parseInt(entrada) - 1;
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Escolha inválida!");
-                    continue;
-                }
-                
-                if (indiceJavamon < 0 || indiceJavamon >= equipe.size()) {
-                    System.out.println("❌ Escolha inválida!");
-                    continue;
-                }
-                
-                Javamon novoAliado = equipe.get(indiceJavamon);
-                if (!novoAliado.estaVivo()) {
-                    System.out.println("❌ Este Javamon está nocauteado!");
-                    continue;
-                }
-                
-                if (novoAliado == aliado) {
-                    System.out.println("❌ Este Javamon já está em campo!");
-                    continue;
-                }
-                
-                aliado = novoAliado;
-                System.out.println("🔄 " + aliado.getNome() + " entrou em campo!");
-                
-                // Inimigo ataca durante a troca
-                if (inimigo.estaVivo()) {
-                    List<Ataque> ataquesInimigo = inimigo.getAtaques();
-                    if (ataquesInimigo != null && !ataquesInimigo.isEmpty()) {
-                        Random rand = new Random();
-                        int indiceAleatorio = rand.nextInt(ataquesInimigo.size());
-                        inimigo.atacar(aliado, indiceAleatorio);
+                // Trocar Javamon - Inimigo ataca durante a troca
+                Javamon novoAliado = trocarJavamonMenu(jogador, aliado, sc);
+                if (novoAliado != null) {
+                    aliado = novoAliado;
+                    System.out.println("🔄 " + aliado.getNome() + " entrou em campo!");
+                    
+                    // Inimigo ataca durante a troca
+                    if (inimigo.estaVivo()) {
+                        executarAtaqueInimigo(inimigo, aliado, jogador);
                     }
                 }
                 
             } else if (escolha == 3) {
-                // Usar Item (com restrição de captura em batalhas contra treinadores)
+                // Usar Item
                 int resultado = usarItemEmBatalha(jogador, inimigo, sc, ehBatalhaTreinador);
                 if (resultado == 1) {
                     System.out.println("\n🎉 Você capturou " + inimigo.getNome() + "!");
-                    return; // Batalha termina com captura
+                    return;
                 }
+                
                 // Se usou item de cura, inimigo ainda ataca
                 if (resultado == 0 && inimigo.estaVivo()) {
-                    List<Ataque> ataquesInimigo = inimigo.getAtaques();
-                    if (ataquesInimigo != null && !ataquesInimigo.isEmpty()) {
-                        Random rand = new Random();
-                        int indiceAleatorio = rand.nextInt(ataquesInimigo.size());
-                        inimigo.atacar(aliado, indiceAleatorio);
-                    }
+                    executarAtaqueInimigo(inimigo, aliado, jogador);
                 }
                 
             } else if (escolha == 4) {
@@ -242,6 +176,133 @@ public class Batalha {
                 System.out.println("❌ Opção inválida!");
             }
         }
+    }
+    
+    // ========== MÉTODOS AUXILIARES PARA VELOCIDADE ==========
+    
+    /**
+     * Determina quem ataca primeiro baseado na velocidade
+     * Em caso de empate, 50% de chance para cada um
+     */
+    private static boolean determinarOrdemAtaque(Javamon aliado, Javamon inimigo) {
+        int spdAliado = aliado.getSpd();
+        int spdInimigo = inimigo.getSpd();
+        
+        if (spdAliado > spdInimigo) {
+            return true; // Aliado ataca primeiro
+        } else if (spdAliado < spdInimigo) {
+            return false; // Inimigo ataca primeiro
+        } else {
+            // Empate: 50% de chance para cada
+            return Math.random() < 0.5;
+        }
+    }
+    
+    /**
+     * Executa o ataque do inimigo
+     */
+    private static void executarAtaqueInimigo(Javamon inimigo, Javamon aliado, Jogador jogador) {
+        List<Ataque> ataquesInimigo = inimigo.getAtaques();
+        if (ataquesInimigo != null && !ataquesInimigo.isEmpty()) {
+            Random rand = new Random();
+            int indiceAleatorio = rand.nextInt(ataquesInimigo.size());
+            inimigo.atacar(aliado, indiceAleatorio);
+        }
+    }
+    
+    /**
+     * Processa a vitória e recompensas
+     */
+    private static void processarVitoria(Jogador jogador, Javamon aliado, Javamon inimigo, boolean ehBatalhaTreinador) {
+        System.out.println("\n🎉 VITÓRIA!");
+        System.out.println("✨ " + inimigo.getNome() + " foi derrotado!");
+        
+        // Recompensas
+        int multiplicador = ehBatalhaTreinador ? 3 : 1;
+        int expGanha = (50 + (inimigo.getLvl() * 10)) * multiplicador;
+        int dinheiroGanho = (30 + (inimigo.getLvl() * 15)) * multiplicador;
+        
+        System.out.println("\n💰 Recompensas:");
+        System.out.println("   💵 Dinheiro: +" + dinheiroGanho);
+        jogador.ganharDinheiro(dinheiroGanho);
+        
+        System.out.println("   ⭐ " + aliado.getNome() + " ganhou " + expGanha + " de EXP!");
+        
+        int nivelAntes = aliado.getLvl();
+        aliado.ganharExperiencia(expGanha);
+        int nivelDepois = aliado.getLvl();
+        
+        if (nivelDepois > nivelAntes) {
+            System.out.println("   🎊 " + aliado.getNome() + " subiu para o nível " + nivelDepois + "!");
+        }
+        
+        System.out.println("\n💼 Dinheiro total: " + jogador.getDinheiro());
+    }
+    
+    /**
+     * Tenta trocar para outro Javamon após nocaute
+     * Retorna o novo Javamon ou null se não houver mais
+     */
+    private static Javamon trocarJavamonAposNocaute(Jogador jogador, Javamon aliadoAtual) {
+        System.out.println("\n💀 " + aliadoAtual.getNome() + " foi nocauteado!");
+        
+        Javamon novoAliado = null;
+        for (Javamon j : jogador.getEquipe()) {
+            if (j.estaVivo() && j != aliadoAtual) {
+                novoAliado = j;
+                break;
+            }
+        }
+        
+        if (novoAliado == null) {
+            System.out.println("\n💀 Todos os seus Javamon foram derrotados!");
+            System.out.println("🏥 Você foi levado ao Centro Javamon mais próximo...");
+            return null;
+        }
+        
+        System.out.println("🔄 " + novoAliado.getNome() + " entrou em campo!");
+        return novoAliado;
+    }
+    
+    /**
+     * Menu para trocar de Javamon manualmente
+     */
+    private static Javamon trocarJavamonMenu(Jogador jogador, Javamon aliadoAtual, Scanner sc) {
+        System.out.println("\n🔄 Escolha um Javamon:");
+        List<Javamon> equipe = jogador.getEquipe();
+        for (int i = 0; i < equipe.size(); i++) {
+            Javamon j = equipe.get(i);
+            String status = j.estaVivo() ? "✅" : "💀";
+            System.out.printf("[%d] %s %s (HP: %d/%d, Nv.%d, SPD:%d)\n", 
+                i + 1, status, j.getNome(), j.getHpATUAL(), j.getHpMAX(), j.getLvl(), j.getSpd());
+        }
+        
+        String entrada = sc.nextLine().trim();
+        int indiceJavamon = -1;
+        try {
+            indiceJavamon = Integer.parseInt(entrada) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Escolha inválida!");
+            return null;
+        }
+        
+        if (indiceJavamon < 0 || indiceJavamon >= equipe.size()) {
+            System.out.println("❌ Escolha inválida!");
+            return null;
+        }
+        
+        Javamon novoAliado = equipe.get(indiceJavamon);
+        if (!novoAliado.estaVivo()) {
+            System.out.println("❌ Este Javamon está nocauteado!");
+            return null;
+        }
+        
+        if (novoAliado == aliadoAtual) {
+            System.out.println("❌ Este Javamon já está em campo!");
+            return null;
+        }
+        
+        return novoAliado;
     }
 
     /**
@@ -260,7 +321,6 @@ public class Batalha {
         for (int i = 0; i < bolsa.size(); i++) {
             Itens item = bolsa.get(i);
             
-            // Se for batalha contra treinador, não mostra Javacube
             if (ehBatalhaTreinador && item instanceof Javacube) {
                 continue;
             }
@@ -288,7 +348,6 @@ public class Batalha {
 
         Itens itemEscolhido = bolsa.get(escolha - 1);
 
-        // Bloqueia uso de Javacube em batalhas contra treinadores
         if (itemEscolhido instanceof Javacube) {
             if (ehBatalhaTreinador) {
                 System.out.println("❌ Você não pode capturar Javamon de outros treinadores!");
@@ -300,7 +359,6 @@ public class Batalha {
             return capturou ? 1 : 0;
         }
 
-        // Senão, precisa escolher alvo (Javamon da equipe)
         System.out.println("\n🎯 Usar em qual Javamon?");
         List<Javamon> equipe = jogador.getEquipe();
         for (int i = 0; i < equipe.size(); i++) {

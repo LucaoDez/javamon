@@ -1,6 +1,5 @@
 import java.util.*;
 
-// Menu interno do jogo, chamado quando o jogador pressiona 'm'
 public class Menu {
     private Jogador jogador;
     private Scanner sc = new Scanner(System.in);

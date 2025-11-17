@@ -164,10 +164,6 @@ public class Jogador {
         System.out.println("🏆 Você agora é o CAMPEÃO da Liga Javamon!!!");
     }
 
-    /* ============================
-       MÉTODOS DE USAR ITENS
-       ============================ */
-
     // Usa item no javamon da equipe
     public void usarItem(int indiceBolsa, int indiceEquipe) {
         if (indiceBolsa < 0 || indiceBolsa >= bolsa.size()) {
@@ -252,10 +248,6 @@ public class Jogador {
         usarItemInterativo(new Scanner(System.in));
     }
 
-    /**
-     * Versão que recebe um Scanner (recomendada se você já tiver um Scanner no main).
-     * Mostra bolsa → escolhe item → mostra equipe → escolhe javamon ou usa no jogador.
-     */
     public void usarItemInterativo(Scanner sc) {
         if (bolsa.isEmpty()) {
             System.out.println("A bolsa está vazia.");

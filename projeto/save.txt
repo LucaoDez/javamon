@@ -1,10 +1,10 @@
 === SAVE JAVAMON ===
-Nome=rafaelviado
-Dinheiro=100
-VitoriasGym=0
-PosX=5
-PosY=1
+Nome=lucas
+Dinheiro=370
+VitoriasGym=1
+PosX=56
+PosY=2
 Equipe=1
-Feuermon|Ignis|1|0|70|70|25|15|20
+Aquaril|Splash|7|0|130|130|37|27|26
 Box=0
 Itens=0
