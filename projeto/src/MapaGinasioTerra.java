@@ -98,9 +98,9 @@ public class MapaGinasioTerra {
         System.out.println("\n⛰️ Gaia: Prepare-se para ser esmagado pela Terra!");
 
         Javamon[] timeTerra = {
-            new Mudrill("Sandarm", 70, 70, 18, 12, 8, 5, 0),
-            new Terravox("Mudhorn", 85, 85, 20, 14, 6, 7, 0),
-            new Terravox("Golemrock", 100, 100, 25, 18, 4, 9, 0)
+            new Mudrill("Sandarm", 70, 70, 18, 12, 8, 1, 0),
+            new Terravox("Mudhorn", 85, 85, 20, 14, 6, 1, 0),
+            new Terravox("Golemrock", 100, 100, 25, 18, 4, 1, 0)
         };
 
         boolean venceu = Batalha.lutarContraTreinador(jogador, "Líder Gaia", timeTerra);
@@ -110,7 +110,8 @@ public class MapaGinasioTerra {
             jogador.addVitoriaGym();
             jogador.marcarGinasioDerrotado(NOME_GINASIO); // MARCA COMO DERROTADO
         } else {
-            System.out.println("\n💀 Você foi soterrado pela força da terra!");
+            System.out.println("\n💀 Você foi soterrado pela força da terra!")
+            ;
         }
     }
 }

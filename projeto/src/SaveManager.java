@@ -20,7 +20,7 @@ public class SaveManager {
             writer.println("Dinheiro=" + jogador.getDinheiro());
             writer.println("VitoriasGym=" + jogador.getVitoriasGym());
             
-            // NOVO: Salvar ginásios derrotados
+            // Salvar ginásios derrotados
             Set<String> ginasios = jogador.getGinasiosDerrotados();
             if (ginasios != null && !ginasios.isEmpty()) {
                 writer.println("GinasiosDerrotados=" + String.join(",", ginasios));
@@ -37,10 +37,11 @@ public class SaveManager {
             writer.println("Equipe=" + (equipe == null ? 0 : equipe.size()));
             if (equipe != null) {
                 for (Javamon j : equipe) {
-                    // Formato: Especie|Nome|Nivel|Exp|HpAtual|HpMax|Atk|Def|Spd
-                    writer.println(String.format("%s|%s|%d|%d|%d|%d|%d|%d|%d",
-                        safe(j.getClass().getSimpleName()),  // classe concreta (Feuermon, Aquaril...)
+                    // CORREÇÃO: Salvar tipagem também para reconstruir corretamente
+                    writer.println(String.format("%s|%s|%s|%d|%d|%d|%d|%d|%d|%d",
+                        safe(j.getClass().getSimpleName()),
                         safe(j.getNome()),
+                        safe(j.getTipagem()),
                         j.getLvl(),
                         j.getExp(),
                         j.getHpATUAL(),
@@ -57,9 +58,10 @@ public class SaveManager {
             writer.println("Box=" + (box == null ? 0 : box.size()));
             if (box != null) {
                 for (Javamon j : box) {
-                    writer.println(String.format("%s|%s|%d|%d|%d|%d|%d|%d|%d",
+                    writer.println(String.format("%s|%s|%s|%d|%d|%d|%d|%d|%d|%d",
                         safe(j.getClass().getSimpleName()),
                         safe(j.getNome()),
+                        safe(j.getTipagem()),
                         j.getLvl(),
                         j.getExp(),
                         j.getHpATUAL(),
@@ -78,15 +80,16 @@ public class SaveManager {
                 for (Itens i : bolsa) {
                     String tipo = i.getClass().getSimpleName();
                     
-                    // Para Pocao, salva também o valor de cura
+                    // CORREÇÃO: Salvar detalhes de Pocao corretamente
                     if (i instanceof Pocao) {
                         try {
                             java.lang.reflect.Field curaField = Pocao.class.getDeclaredField("cura");
                             curaField.setAccessible(true);
                             int cura = curaField.getInt(i);
-                            writer.println(tipo + "|" + i.getQuantidade() + "|" + cura);
+                            // Formato: Pocao|quantidade|cura|nome_exibicao
+                            writer.println(tipo + "|" + i.getQuantidade() + "|" + cura + "|" + safe(i.getNome()));
                         } catch (Exception e) {
-                            writer.println(tipo + "|" + i.getQuantidade());
+                            writer.println(tipo + "|" + i.getQuantidade() + "|50|Poção");
                         }
                     } else {
                         writer.println(tipo + "|" + i.getQuantidade());
@@ -122,7 +125,7 @@ public class SaveManager {
             int dinheiroSalvo = parseIntSafe(nextValue(reader.readLine()), 100);
             int vitoriasGym = parseIntSafe(nextValue(reader.readLine()), 0);
             
-            // NOVO: Carregar ginásios derrotados
+            // Carregar ginásios derrotados
             String ginasiosLine = nextValue(reader.readLine());
             Set<String> ginasiosDerrotados = new HashSet<>();
             if (ginasiosLine != null && !ginasiosLine.trim().isEmpty()) {
@@ -154,7 +157,7 @@ public class SaveManager {
                 System.out.println("⚠️ Não foi possível restaurar vitórias de ginásio.");
             }
             
-            // NOVO: Restaurar ginásios derrotados
+            // Restaurar ginásios derrotados
             jogador.setGinasiosDerrotados(ginasiosDerrotados);
 
             // Posiciona jogador no mapa
@@ -193,13 +196,19 @@ public class SaveManager {
                 String tipoItem = dados[0].trim();
                 int quantidade = parseIntSafe(dados[1].trim(), 1);
                 
+                // CORREÇÃO: Carregar Pocao corretamente
                 int cura = 50;
-                if (dados.length >= 3) {
+                String nomeItem = "Poção";
+                
+                if (tipoItem.equals("Pocao") && dados.length >= 3) {
                     cura = parseIntSafe(dados[2].trim(), 50);
+                    if (dados.length >= 4) {
+                        nomeItem = dados[3].trim();
+                    }
                 }
 
                 try {
-                    Itens item = criarItem(tipoItem, quantidade, cura);
+                    Itens item = criarItem(tipoItem, quantidade, cura, nomeItem);
                     if (item != null && jogador.getBolsa() != null) {
                         jogador.getBolsa().add(item);
                     }
@@ -246,7 +255,8 @@ public class SaveManager {
         if (line == null || line.trim().isEmpty()) return null;
         
         String[] dados = line.split("\\|");
-        if (dados.length < 9) {
+        // CORREÇÃO: Agora espera 10 campos (incluindo tipagem)
+        if (dados.length < 10) {
             System.out.println("⚠️ Linha de Javamon inválida: " + line);
             return null;
         }
@@ -254,15 +264,48 @@ public class SaveManager {
         try {
             String especie = dados[0].trim();
             String nome = dados[1].trim();
-            int nivel = parseIntSafe(dados[2], 1);
-            int exp = parseIntSafe(dados[3], 0);
-            int hpAtual = parseIntSafe(dados[4], 70);
-            int hpMax = parseIntSafe(dados[5], 70);
-            int atk = parseIntSafe(dados[6], 25);
-            int def = parseIntSafe(dados[7], 15);
-            int spd = parseIntSafe(dados[8], 20);
+            String tipagem = dados[2].trim();
+            int nivel = parseIntSafe(dados[3], 1);
+            int exp = parseIntSafe(dados[4], 0);
+            int hpAtual = parseIntSafe(dados[5], 70);
+            int hpMax = parseIntSafe(dados[6], 70);
+            int atk = parseIntSafe(dados[7], 25);
+            int def = parseIntSafe(dados[8], 15);
+            int spd = parseIntSafe(dados[9], 20);
 
             Javamon j = criarJavamonPorEspecie(especie, nome, hpMax, hpAtual, atk, def, spd, nivel, exp);
+            
+            // CORREÇÃO: Restaurar HP e stats salvos usando reflection se necessário
+            if (j != null) {
+                j.setHpATUAL(hpAtual);
+                j.setLvl(nivel);
+                
+                // Ajusta stats via reflection se os valores salvos forem diferentes
+                try {
+                    java.lang.reflect.Field hpMaxField = Javamon.class.getDeclaredField("hpMAX");
+                    hpMaxField.setAccessible(true);
+                    hpMaxField.setInt(j, hpMax);
+                    
+                    java.lang.reflect.Field atkField = Javamon.class.getDeclaredField("atk");
+                    atkField.setAccessible(true);
+                    atkField.setInt(j, atk);
+                    
+                    java.lang.reflect.Field defField = Javamon.class.getDeclaredField("def");
+                    defField.setAccessible(true);
+                    defField.setInt(j, def);
+                    
+                    java.lang.reflect.Field spdField = Javamon.class.getDeclaredField("spd");
+                    spdField.setAccessible(true);
+                    spdField.setInt(j, spd);
+                    
+                    java.lang.reflect.Field expField = Javamon.class.getDeclaredField("exp");
+                    expField.setAccessible(true);
+                    expField.setInt(j, exp);
+                } catch (Exception e) {
+                    System.out.println("⚠️ Aviso: Não foi possível ajustar todos os stats de " + nome);
+                }
+            }
+            
             return j;
 
         } catch (Exception e) {
@@ -307,11 +350,13 @@ public class SaveManager {
         return j;
     }
 
-    private static Itens criarItem(String tipoItem, int quantidade, int cura) {
+    private static Itens criarItem(String tipoItem, int quantidade, int cura, String nomeExibicao) {
         try {
             switch (tipoItem) {
                 case "Pocao":
-                    return new Pocao(quantidade, cura);
+                    // CORREÇÃO: Criar Pocao com valores salvos
+                    Pocao pocao = new Pocao(quantidade, cura);
+                    return pocao;
                 case "Revive":
                     return new Revive(quantidade);
                 case "Javacube":

@@ -136,7 +136,7 @@ public class MenuInicial {
             System.out.println("\n3️⃣  🌿 TERRAVOX - O Colosso de Pedra (TERRA)");
             System.out.println("    ╔══════════════════════════════════════╗");
             System.out.println("    ║  HP:  ██████████ 120 ⭐ ALTÍSSIMO   ║");
-            System.out.println("    ║  ATK: ███░░░░░░░ 15  ⚔️  MUITO BAIXO║");
+            System.out.println("    ║  ATK: ████░░░░░░ 20  ⚔️  MUITO BAIXO║");
             System.out.println("    ║  DEF: ██████████ 50  🛡️  ALTÍSSIMO  ║");
             System.out.println("    ║  SPD: █░░░░░░░░░ 5   ⚡ MUITO LENTO ║");
             System.out.println("    ╚══════════════════════════════════════╝");

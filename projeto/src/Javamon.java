@@ -120,21 +120,27 @@ public abstract class Javamon{
             System.out.println("Ataque inválido!");
             return;
         }
-
+    
         Ataque ataque = ataques.get(indiceAtaque);
 
         if (ataque.getPpATUAL() <= 0) {
             System.out.println(ataque.getNome() + " está sem PP!");
-            return;
+        return;
         }
 
         ataque.reduzirPp(); // reduz PP em 1
 
         double multiplicador = calcularMultiplicador(ataque.getTipo(), defensor.getTipagem());
 
-        int danoBase = (ataque.getPoder() + this.atk) - defensor.getDef();
+        int danoBase = (ataque.getPoder() + this.atk) - defensor.getDef() / 2;
+    
+        // Se o dano base for muito baixo, garante pelo menos 1 de dano base
+        if (danoBase < 1) danoBase = 1;
+    
         int danoFinal = (int) (danoBase * multiplicador);
-        if (danoFinal < 0) danoFinal = 0;
+    
+        // Garante que o dano final seja pelo menos 1
+        if (danoFinal < 1) danoFinal = 1;
 
         defensor.levarDano(danoFinal);
 
